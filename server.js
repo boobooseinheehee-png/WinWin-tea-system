@@ -1,4 +1,5 @@
-﻿const express = require('express');
+﻿require('dotenv').config();
+const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
@@ -7,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 // Cloud MongoDB (Atlas) ချိတ်ဆက်ခြင်း - VPN/SRV Bypass
-const mongoURI = "mongodb://boobooseinheehee_db_user:LM0Vx3atJXAtfozM@ac-tsbty4s-shard-00-00.gdugzr9.mongodb.net:27017,ac-tsbty4s-shard-00-01.gdugzr9.mongodb.net:27017,ac-tsbty4s-shard-00-02.gdugzr9.mongodb.net:27017/bhinhub_tea_db?ssl=true&replicaSet=atlas-lqfc3x-shard-0&authSource=admin&appName=Cluster0";
+const mongoURI = process.env.MONGO_URI;
 
 mongoose.connect(mongoURI)
     .then(() => console.log("✅ Cloud MongoDB (Atlas) ချိတ်ဆက်မှု အောင်မြင်ပါသည်"))
