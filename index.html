@@ -1,0 +1,605 @@
+﻿<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>လက်ဖက်လုပ်ငန်း စီမံခန့်ခွဲမှုစနစ် (Wholesale & Dates)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f9f4;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2e7d32;
+            text-align: center;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #4caf50;
+            margin-bottom: 20px;
+        }
+
+            .card h3 {
+                margin-top: 0;
+                color: #1b5e20;
+                border-bottom: 1px solid #c8e6c9;
+                padding-bottom: 5px;
+                font-size: 16px;
+            }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+            input[type="date"] {
+                border-color: #4caf50;
+                background-color: #f1f8e9;
+            }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+            button:hover {
+                background-color: #388e3c;
+            }
+
+        .action-btn {
+            padding: 5px 10px;
+            font-size: 12px;
+            background-color: #ff9800;
+            width: auto;
+            margin-top: 0;
+        }
+
+            .action-btn:hover {
+                background-color: #e68a00;
+            }
+
+        .dashboard {
+            margin-top: 20px;
+            background: #c8e6c9;
+            padding: 20px;
+            border-radius: 8px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            text-align: center;
+        }
+
+        .dash-box {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+            .dash-box span {
+                display: block;
+                font-size: 18px;
+                color: #d32f2f;
+                margin-top: 8px;
+            }
+
+        .income-text {
+            color: #2e7d32 !important;
+        }
+
+        .reset-btn {
+            background-color: #d32f2f;
+            margin-top: 20px;
+        }
+
+            .reset-btn:hover {
+                background-color: #b71c1c;
+            }
+
+        .table-responsive {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .status-clear {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        .status-debt {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+
+        .flex-row {
+            display: flex;
+            gap: 10px;
+        }
+
+            .flex-row .form-group {
+                flex: 1;
+            }
+
+        @media (max-width: 900px) {
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🍃 အိမ်တွင်း လက်ဖက်လုပ်ငန်း စာရင်း</h1>
+
+        <div class="grid-3">
+            <div class="card">
+                <h3>📦 ကုန်ကြမ်း ဝယ်ယူမှု</h3>
+                <div class="form-group">
+                    <label>ရက်စွဲ:</label>
+                    <input type="date" id="dateRawTea">
+                </div>
+                <div class="form-group">
+                    <label>ဝယ်ယူထားသော လက်ဖက်အကြမ်း (ပိဿာ):</label>
+                    <input type="number" id="rawTeaViss" placeholder="၀">
+                </div>
+                <div class="form-group">
+                    <label>ဝယ်ယူသည့် စုစုပေါင်း ကျသင့်ငွေ (ကျပ်):</label>
+                    <input type="number" id="rawTeaCost" placeholder="၀">
+                </div>
+                <button onclick="saveRawMaterials()">ကုန်ကြမ်း စာရင်းသွင်းမည်</button>
+            </div>
+
+            <div class="card">
+                <h3>🛠 ထုတ်လုပ်မှု နှင့် ကုန်ကျစရိတ်</h3>
+                <div class="form-group">
+                    <label>ရက်စွဲ:</label>
+                    <input type="date" id="dateProd">
+                </div>
+                <p style="font-size: 11px; color: #555; margin-top: 0;">(၅ ကျပ်သား ၁ အိတ် = ၂၅ ပါကင်၊ ၁၀ ကျပ်သား ၁ အိတ် = ၂၄ ပါကင်)</p>
+
+                <label style="color: #1b5e20;">ထွက်ရှိသည့် ၅ ကျပ်သား</label>
+                <div class="flex-row">
+                    <div class="form-group"><input type="number" id="prod5kBag" placeholder="အိတ်ရေ"></div>
+                    <div class="form-group"><input type="number" id="prod5kPack" placeholder="ပါကင်ရေ"></div>
+                </div>
+
+                <label style="color: #1b5e20;">ထွက်ရှိသည့် ၁၀ ကျပ်သား</label>
+                <div class="flex-row">
+                    <div class="form-group"><input type="number" id="prod10kBag" placeholder="အိတ်ရေ"></div>
+                    <div class="form-group"><input type="number" id="prod10kPack" placeholder="ပါကင်ရေ"></div>
+                </div>
+
+                <hr style="border: 0.5px solid #c8e6c9; margin: 10px 0;">
+                <p style="font-size: 11px; color: #d32f2f; margin: 0 0 10px 0; font-weight: bold;">* အလုပ်သမားခ အလိုအလျောက် ပေါင်းပေးမည်။</p>
+                <div class="flex-row">
+                    <div class="form-group"><label>ပလတ်စတစ်ဖိုး:</label><input type="number" id="expPlastic" placeholder="၀"></div>
+                    <div class="form-group"><label>တံဆိပ်ဖိုး:</label><input type="number" id="expLabel" placeholder="၀"></div>
+                </div>
+                <div class="flex-row">
+                    <div class="form-group"><label>ဖယောင်းတိုင်ဖိုး:</label><input type="number" id="expCandle" placeholder="၀"></div>
+                    <div class="form-group"><label>အိမ်သုံးစရိတ်:</label><input type="number" id="expOther" placeholder="၀"></div>
+                </div>
+                <button onclick="saveProduction()">ထုတ်လုပ်မှုနှင့် စရိတ် သွင်းမည်</button>
+            </div>
+
+            <div class="card">
+                <h3>🧾 အရောင်းဘောက်ချာ</h3>
+                <div class="form-group">
+                    <label>ရက်စွဲ:</label>
+                    <input type="date" id="dateVoucher">
+                </div>
+                <div class="form-group">
+                    <label>ဝယ်ယူသူ အမည်:</label>
+                    <input type="text" id="cusName" placeholder="ဥပမာ - ဒေါ်လှ">
+                </div>
+
+                <label style="color: #1b5e20;">၅ ကျပ်သား</label>
+                <div class="flex-row">
+                    <div class="form-group"><input type="number" id="sold5kBag" placeholder="အိတ်ရေ"></div>
+                    <div class="form-group"><input type="number" id="sold5kPack" placeholder="ပါကင်ရေ"></div>
+                </div>
+
+                <label style="color: #1b5e20;">၁၀ ကျပ်သား</label>
+                <div class="flex-row">
+                    <div class="form-group"><input type="number" id="sold10kBag" placeholder="အိတ်ရေ"></div>
+                    <div class="form-group"><input type="number" id="sold10kPack" placeholder="ပါကင်ရေ"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>ပေးချေငွေ (အကြွေးဆို 0 ထည့်ပါ):</label>
+                    <input type="number" id="paidAmount" placeholder="၀">
+                </div>
+                <button onclick="saveVoucher()">ဘောက်ချာ ဖြတ်မည်</button>
+            </div>
+        </div>
+
+        <div class="card" style="background: #fff;">
+            <h3 style="margin: 0 0 10px 0; color: #1b5e20;">📊 နေ့စဉ် ထုတ်လုပ်မှု နှင့် စရိတ် မှတ်တမ်း</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ရက်စွဲ</th>
+                            <th>၅ ကျပ်သား (ထွက်)</th>
+                            <th>၁၀ ကျပ်သား (ထွက်)</th>
+                            <th>အလုပ်သမားခ</th>
+                            <th>အခြားစရိတ်များ</th>
+                            <th>စုစုပေါင်း ထွက်ငွေ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="prodLogBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card" style="background: #fff;">
+            <h3 style="margin: 0 0 10px 0; color: #1b5e20;">📋 ဝယ်သူမှတ်တမ်း နှင့် အကြွေးစာရင်း</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ရက်စွဲ</th>
+                            <th>အမည်</th>
+                            <th>၅ ကျပ်သား</th>
+                            <th>၁၀ ကျပ်သား</th>
+                            <th>ကျသင့်ငွေ</th>
+                            <th>ပေးပြီးငွေ</th>
+                            <th>ကျန်ငွေ</th>
+                            <th>အခြေအနေ</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="voucherLogBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 style="margin-top: 30px; margin-bottom: 10px;">📊 လုပ်ငန်း အကျဉ်းချုပ် (စုစုပေါင်း)</h2>
+        <div class="dashboard">
+            <div class="dash-box">
+                လက်ကျန် ကုန်ကြမ်း
+                <span id="displayRawTea">0 ပိဿာ</span>
+            </div>
+            <div class="dash-box">
+                ၅ ကျပ်သား လက်ကျန်
+                <span id="displayStock5k">0</span>
+            </div>
+            <div class="dash-box">
+                ၁၀ ကျပ်သား လက်ကျန်
+                <span id="displayStock10k">0</span>
+            </div>
+            <div class="dash-box">
+                ရရန်ရှိငွေ (အကြွေး)
+                <span class="income-text" id="displayTotalDebt">0</span>
+            </div>
+            <div class="dash-box">
+                စုစုပေါင်း ထွက်ငွေ
+                <span id="displayTotalExpenses">0</span>
+            </div>
+            <div class="dash-box">
+                အသားတင် လက်ကျန်ငွေ
+                <span class="income-text" id="displayNetCash">0</span>
+            </div>
+        </div>
+
+        <button class="reset-btn" onclick="clearData()">စာရင်းအားလုံး ဖျက်မည် (Reset)</button>
+    </div>
+
+    <script>
+        // Server ရဲ့ လိပ်စာကို ချိတ်ဆက်ထားခြင်း
+        const SERVER_URL = "http://localhost:5000";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            let today = new Date().toISOString().split('T')[0];
+            document.getElementById('dateRawTea').value = today;
+            document.getElementById('dateProd').value = today;
+            document.getElementById('dateVoucher').value = today;
+            loadData();
+        });
+
+        const PRICE_PER_PACK = 12500;
+        const PACKS_PER_5K_BAG = 25;
+        const PACKS_PER_10K_BAG = 24;
+
+        function formatDate(dateStr) {
+            let parts = dateStr.split('-');
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+        function saveRawMaterials() {
+            let date = document.getElementById('dateRawTea').value;
+            let viss = parseFloat(document.getElementById('rawTeaViss').value) || 0;
+            let cost = parseFloat(document.getElementById('rawTeaCost').value) || 0;
+
+            localStorage.setItem('totalRawTeaViss', (parseFloat(localStorage.getItem('totalRawTeaViss') || 0) + viss));
+            localStorage.setItem('totalExpenses', (parseFloat(localStorage.getItem('totalExpenses') || 0) + cost));
+
+            document.getElementById('rawTeaViss').value = '';
+            document.getElementById('rawTeaCost').value = '';
+            loadData();
+        }
+
+        // ထုတ်လုပ်မှု မှတ်တမ်းကို Server သို့ လှမ်းပို့မည့် Function
+        async function saveProduction() {
+            let date = document.getElementById('dateProd').value;
+
+            let bag5k = parseInt(document.getElementById('prod5kBag').value) || 0;
+            let pack5k = parseInt(document.getElementById('prod5kPack').value) || 0;
+            let prod5kTotal = (bag5k * PACKS_PER_5K_BAG) + pack5k;
+
+            let bag10k = parseInt(document.getElementById('prod10kBag').value) || 0;
+            let pack10k = parseInt(document.getElementById('prod10kPack').value) || 0;
+            let prod10kTotal = (bag10k * PACKS_PER_10K_BAG) + pack10k;
+
+            let laborCost = (prod5kTotal * 160) + (prod10kTotal * 140);
+            let expPlastic = parseFloat(document.getElementById('expPlastic').value) || 0;
+            let expLabel = parseFloat(document.getElementById('expLabel').value) || 0;
+            let expCandle = parseFloat(document.getElementById('expCandle').value) || 0;
+            let expOther = parseFloat(document.getElementById('expOther').value) || 0;
+
+            let materialsCost = expPlastic + expLabel + expCandle + expOther;
+            let dailyExpenses = laborCost + materialsCost;
+
+            // Server ကို ပို့မည့် Data အထုပ်အပိုး
+            let dbPayload = {
+                date: formatDate(date),
+                prod5kStr: (bag5k > 0 ? `${bag5k}အိတ် ` : '') + (pack5k > 0 ? `${pack5k}ပါကင်` : '') || '-',
+                prod10kStr: (bag10k > 0 ? `${bag10k}အိတ် ` : '') + (pack10k > 0 ? `${pack10k}ပါကင်` : '') || '-',
+                laborCost: laborCost,
+                materialsCost: materialsCost,
+                totalExp: dailyExpenses
+            };
+
+            try {
+                // API ဖြင့် Database သို့ သိမ်းဆည်းခြင်း
+                await fetch(SERVER_URL + '/api/production', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dbPayload)
+                });
+
+                localStorage.setItem('totalProd5k', (parseInt(localStorage.getItem('totalProd5k') || 0) + prod5kTotal));
+                localStorage.setItem('totalProd10k', (parseInt(localStorage.getItem('totalProd10k') || 0) + prod10kTotal));
+                localStorage.setItem('totalExpenses', (parseFloat(localStorage.getItem('totalExpenses') || 0) + dailyExpenses));
+
+                ['prod5kBag', 'prod5kPack', 'prod10kBag', 'prod10kPack', 'expPlastic', 'expLabel', 'expCandle', 'expOther'].forEach(id => {
+                    document.getElementById(id).value = '';
+                });
+
+                loadData();
+                alert("✅ ထုတ်လုပ်မှု မှတ်တမ်းကို Cloud Database သို့ အောင်မြင်စွာ သိမ်းဆည်းလိုက်ပါပြီ!");
+            } catch (error) {
+                console.error("Database Error:", error);
+                alert("❌ Server နှင့် ချိတ်ဆက်၍ မရပါ။ စနစ်ကို Run ထားခြင်း ရှိမရှိ စစ်ဆေးပါ။");
+            }
+        }
+
+        // အရောင်း ဘောက်ချာကို Server သို့ လှမ်းပို့မည့် Function
+        async function saveVoucher() {
+            let date = document.getElementById('dateVoucher').value;
+            let name = document.getElementById('cusName').value || 'အမည်မသိ';
+
+            let bag5k = parseInt(document.getElementById('sold5kBag').value) || 0;
+            let pack5k = parseInt(document.getElementById('sold5kPack').value) || 0;
+            let bag10k = parseInt(document.getElementById('sold10kBag').value) || 0;
+            let pack10k = parseInt(document.getElementById('sold10kPack').value) || 0;
+            let paidAmount = parseFloat(document.getElementById('paidAmount').value) || 0;
+
+            let total5kPacksSold = (bag5k * PACKS_PER_5K_BAG) + pack5k;
+            let total10kPacksSold = (bag10k * PACKS_PER_10K_BAG) + pack10k;
+
+            if (total5kPacksSold === 0 && total10kPacksSold === 0) {
+                alert("ရောင်းရသည့် အရေအတွက် ထည့်ပါ။"); return;
+            }
+
+            let totalCost = (total5kPacksSold * PRICE_PER_PACK) + (total10kPacksSold * PRICE_PER_PACK);
+            let debt = totalCost - paidAmount;
+
+            let display5kSold = (bag5k > 0 ? `${bag5k}အိတ် ` : '') + (pack5k > 0 ? `${pack5k}ပါကင်` : '');
+            let display10kSold = (bag10k > 0 ? `${bag10k}အိတ် ` : '') + (pack10k > 0 ? `${pack10k}ပါကင်` : '');
+
+            // Server ကို ပို့မည့် ဘောက်ချာ Data
+            let dbPayload = {
+                date: formatDate(date),
+                name: name,
+                sold5kStr: display5kSold || '-',
+                sold10kStr: display10kSold || '-',
+                totalCost: totalCost,
+                paidAmount: paidAmount,
+                debt: debt > 0 ? debt : 0
+            };
+
+            try {
+                // API ဖြင့် Database သို့ သိမ်းဆည်းခြင်း
+                await fetch(SERVER_URL + '/api/voucher', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dbPayload)
+                });
+
+                localStorage.setItem('totalSold5k', (parseInt(localStorage.getItem('totalSold5k') || 0) + total5kPacksSold));
+                localStorage.setItem('totalSold10k', (parseInt(localStorage.getItem('totalSold10k') || 0) + total10kPacksSold));
+                localStorage.setItem('totalCashCollected', (parseFloat(localStorage.getItem('totalCashCollected') || 0) + paidAmount));
+
+                ['cusName', 'sold5kBag', 'sold5kPack', 'sold10kBag', 'sold10kPack', 'paidAmount'].forEach(id => {
+                    document.getElementById(id).value = '';
+                });
+
+                loadData();
+                alert("✅ ဘောက်ချာကို Cloud Database သို့ အောင်မြင်စွာ သိမ်းဆည်းလိုက်ပါပြီ!");
+            } catch (error) {
+                console.error("Database Error:", error);
+                alert("❌ Server နှင့် ချိတ်ဆက်၍ မရပါ။");
+            }
+        }
+
+        function payDebt(voucherId) {
+            alert("အကြွေးဆပ်သည့်စနစ်ကို Cloud Database နှင့် အပြည့်အဝချိတ်ဆက်ရန် နောက်အပိုင်းတွင် ဆက်လက် ရေးသားပါမည်။");
+        }
+
+        // Database မှ Data များကို ဇယားထဲသို့ ဆွဲထုတ်ပြသမည့် Function
+        async function loadData() {
+            try {
+                // API ဖြင့် Database မှ Data များကို လှမ်းယူခြင်း
+                let response = await fetch(SERVER_URL + '/api/data');
+                let dbData = await response.json();
+
+                let prodLogs = dbData.prodLogs || [];
+                let vouchers = dbData.vouchers || [];
+
+                let prodHTML = '';
+                if (prodLogs.length === 0) {
+                    prodHTML = '<tr><td colspan="6">မှတ်တမ်း မရှိသေးပါ</td></tr>';
+                } else {
+                    prodLogs.slice().reverse().forEach(log => {
+                        prodHTML += `<tr>
+                            <td>${log.date}</td>
+                            <td>${log.prod5kStr}</td>
+                            <td>${log.prod10kStr}</td>
+                            <td>${log.laborCost.toLocaleString()}</td>
+                            <td>${log.materialsCost.toLocaleString()}</td>
+                            <td style="color:#d32f2f; font-weight:bold;">${log.totalExp.toLocaleString()}</td>
+                        </tr>`;
+                    });
+                }
+                document.getElementById('prodLogBody').innerHTML = prodHTML;
+
+                let voucherHTML = '';
+                let totalDebt = 0;
+                if (vouchers.length === 0) {
+                    voucherHTML = '<tr><td colspan="9">မှတ်တမ်း မရှိသေးပါ</td></tr>';
+                } else {
+                    vouchers.slice().reverse().forEach(v => {
+                        totalDebt += v.debt;
+                        let status = v.debt > 0 ? '<span class="status-debt">ကျန်</span>' : '<span class="status-clear">ရှင်းပြီး</span>';
+                        let actionBtn = v.debt > 0 ? `<button class="action-btn" onclick="payDebt('${v._id}')">ငွေဆပ်မည်</button>` : '-';
+
+                        voucherHTML += `<tr>
+                            <td>${v.date}</td>
+                            <td>${v.name}</td>
+                            <td>${v.sold5kStr}</td>
+                            <td>${v.sold10kStr}</td>
+                            <td>${v.totalCost.toLocaleString()}</td>
+                            <td>${v.paidAmount.toLocaleString()}</td>
+                            <td class="status-debt">${v.debt.toLocaleString()}</td>
+                            <td>${status}</td>
+                            <td>${actionBtn}</td>
+                        </tr>`;
+                    });
+                }
+                document.getElementById('voucherLogBody').innerHTML = voucherHTML;
+                document.getElementById('displayTotalDebt').innerText = totalDebt.toLocaleString();
+
+            } catch (error) {
+                console.error("Failed to load from DB", error);
+                document.getElementById('prodLogBody').innerHTML = '<tr><td colspan="6" style="color:red;">Database နှင့် ချိတ်ဆက်၍ မရပါ။ Server (Node.js) အလုပ်လုပ်နေခြင်း ရှိမရှိ စစ်ဆေးပါ။</td></tr>';
+            }
+
+            // Dashboard အကျဉ်းချုပ် တွက်ချက်ခြင်း
+            let totalRawTeaViss = parseFloat(localStorage.getItem('totalRawTeaViss') || 0);
+            let totalProd5k = parseInt(localStorage.getItem('totalProd5k') || 0);
+            let totalProd10k = parseInt(localStorage.getItem('totalProd10k') || 0);
+            let totalSold5k = parseInt(localStorage.getItem('totalSold5k') || 0);
+            let totalSold10k = parseInt(localStorage.getItem('totalSold10k') || 0);
+            let totalExpenses = parseFloat(localStorage.getItem('totalExpenses') || 0);
+            let totalCashCollected = parseFloat(localStorage.getItem('totalCashCollected') || 0);
+
+            let stock5k = totalProd5k - totalSold5k;
+            let stock10k = totalProd10k - totalSold10k;
+            let netCash = totalCashCollected - totalExpenses;
+
+            let bag5kLeft = Math.floor(stock5k / PACKS_PER_5K_BAG);
+            let pack5kLeft = stock5k % PACKS_PER_5K_BAG;
+            let display5kStr = `${stock5k} ပါကင် ` + (stock5k >= PACKS_PER_5K_BAG ? `<br><small style="color: #666;">(${bag5kLeft} အိတ်, ${pack5kLeft} ပါကင်)</small>` : '');
+
+            let bag10kLeft = Math.floor(stock10k / PACKS_PER_10K_BAG);
+            let pack10kLeft = stock10k % PACKS_PER_10K_BAG;
+            let display10kStr = `${stock10k} ပါကင် ` + (stock10k >= PACKS_PER_10K_BAG ? `<br><small style="color: #666;">(${bag10kLeft} အိတ်, ${pack10kLeft} ပါကင်)</small>` : '');
+
+            document.getElementById('displayRawTea').innerText = totalRawTeaViss + " ပိဿာ";
+            document.getElementById('displayStock5k').innerHTML = display5kStr;
+            document.getElementById('displayStock10k').innerHTML = display10kStr;
+            document.getElementById('displayTotalExpenses').innerText = totalExpenses.toLocaleString();
+            document.getElementById('displayNetCash').innerText = netCash.toLocaleString();
+        }
+
+        function clearData() {
+            if (confirm("Local အချက်အလက်များကို ဖျက်မည်လား? (Database ထဲမှ အချက်အလက်များ မပျက်ပါ)")) {
+                localStorage.clear();
+                loadData();
+            }
+        }
+    </script>
+
+</body>
+</html>
