@@ -73,7 +73,7 @@ app.post('/api/voucher', async (req, res) => {
     }
 });
 
-// 📌 အကြွေးဆပ်ရန် လမ်းကြောင်း (API Endpoint အသစ်)
+// 📌 အကြွေးဆပ်ရန် လမ်းကြောင်း 
 app.put('/api/voucher/:id/pay', async (req, res) => {
     try {
         const voucherId = req.params.id;
@@ -82,11 +82,8 @@ app.put('/api/voucher/:id/pay', async (req, res) => {
         const voucher = await Voucher.findById(voucherId);
         if (!voucher) return res.status(404).json({ message: "ဘောက်ချာ ရှာမတွေ့ပါ" });
 
-        // ပေးပြီးသားငွေကို ပေါင်းထည့်မယ်၊ အကြွေးကို ပြန်နုတ်မယ်
         voucher.paidAmount += Number(payAmount);
         voucher.debt = voucher.totalCost - voucher.paidAmount;
-        
-        // အကြွေးကျေသွားရင် (အနှုတ်ပြနေရင်) သုည ပဲထားမယ်
         if (voucher.debt < 0) voucher.debt = 0;
 
         await voucher.save();
