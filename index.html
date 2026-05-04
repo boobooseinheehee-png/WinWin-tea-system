@@ -131,8 +131,8 @@
         <h2 style="margin-top: 30px; margin-bottom: 10px;">📊 လုပ်ငန်း အကျဉ်းချုပ် (စုစုပေါင်း)</h2>
         <div class="dashboard">
             <div class="dash-box">လက်ကျန် ကုန်ကြမ်း<span id="displayRawTea">0 ပိဿာ</span></div>
-            <div class="dash-box">၅ ကျပ်သား လက်ကျန်<span id="displayStock5k">0</span></div>
-            <div class="dash-box">၁၀ ကျပ်သား လက်ကျန်<span id="displayStock10k">0</span></div>
+            <div class="dash-box">၅ ကျပ်သား အခြေအနေ<span id="displayStock5k">0</span></div>
+            <div class="dash-box">၁၀ ကျပ်သား အခြေအနေ<span id="displayStock10k">0</span></div>
             <div class="dash-box">ရရန်ရှိငွေ (အကြွေး)<span class="income-text" id="displayTotalDebt">0</span></div>
             <div class="dash-box">စုစုပေါင်း ထွက်ငွေ<span id="displayTotalExpenses">0</span></div>
             <div class="dash-box">အသားတင် လက်ကျန်ငွေ<span class="income-text" id="displayNetCash">0</span></div>
@@ -160,7 +160,6 @@
             return `${parts[2]}/${parts[1]}/${parts[0]}`;
         }
 
-        // Database ထဲရှိ စာသားများကို ဂဏန်းအဖြစ် ပြန်ပြောင်းပေးမည့် Function
         function parsePacks(str, packsPerBag) {
             if (!str || str === '-') return 0;
             let total = 0;
@@ -187,7 +186,6 @@
                 document.getElementById('rawTeaViss').value = '';
                 document.getElementById('rawTeaCost').value = '';
                 loadData();
-                alert("✅ ကုန်ကြမ်းဝယ်ယူမှု Database သို့ သိမ်းဆည်းလိုက်ပါပြီ!");
             } catch (error) { alert("❌ Server နှင့် ချိတ်ဆက်၍ မရပါ။"); }
         }
 
@@ -221,7 +219,6 @@
                 });
                 ['prod5kBag', 'prod5kPack', 'prod10kBag', 'prod10kPack', 'expPlastic', 'expLabel', 'expCandle', 'expOther', 'expDeli'].forEach(id => document.getElementById(id).value = '');
                 loadData();
-                alert("✅ ထုတ်လုပ်မှု မှတ်တမ်း Database သို့ သိမ်းဆည်းလိုက်ပါပြီ!");
             } catch (error) { alert("❌ Server နှင့် ချိတ်ဆက်၍ မရပါ။"); }
         }
 
@@ -261,7 +258,6 @@
                 });
                 ['cusName', 'cusPhone', 'cusAddress', 'sold5kBag', 'sold5kPack', 'sold10kBag', 'sold10kPack', 'bagFee', 'paidAmount'].forEach(id => document.getElementById(id).value = '');
                 loadData();
-                alert("✅ ဘောက်ချာ Database သို့ သိမ်းဆည်းလိုက်ပါပြီ!");
             } catch (error) { alert("❌ Server နှင့် ချိတ်ဆက်၍ မရပါ။"); }
         }
 
@@ -290,7 +286,6 @@
                 let prodLogs = dbData.prodLogs || [];
                 let vouchers = dbData.vouchers || [];
 
-                // ဇယားများ ရေးဆွဲခြင်း
                 let prodHTML = '';
                 prodLogs.slice().reverse().forEach(log => {
                     prodHTML += `<tr><td>${log.date}</td><td>${log.prod5kStr}</td><td>${log.prod10kStr}</td><td>${log.laborCost.toLocaleString()}</td><td>${log.materialsCost.toLocaleString()}</td><td>${log.deliFee ? log.deliFee.toLocaleString() : '0'}</td><td style="color:#d32f2f; font-weight:bold;">${log.totalExp.toLocaleString()}</td></tr>`;
@@ -305,7 +300,6 @@
                 });
                 document.getElementById('voucherLogBody').innerHTML = voucherHTML || '<tr><td colspan="10">မှတ်တမ်း မရှိသေးပါ</td></tr>';
 
-                // Database မှ တိုက်ရိုက်တွက်ချက်ခြင်း (Local Storage မလိုတော့ပါ)
                 let totalRawTeaViss = 0;
                 let totalExpenses = 0;
                 rawMaterials.forEach(r => { totalRawTeaViss += r.viss || 0; totalExpenses += r.cost || 0; });
@@ -326,16 +320,34 @@
                     totalDebt += v.debt || 0;
                 });
 
-                let stock5k = Math.max(0, totalProd5k - totalSold5k);
-                let stock10k = Math.max(0, totalProd10k - totalSold10k);
+                // 📌 ဒီနေရာက Math.max(0, ...) ကို ဖြုတ်လိုက်ပါပြီ။ အနှုတ်ပြလည်း ပေါ်နေပါမယ်။
+                let stock5k = totalProd5k - totalSold5k;
+                let stock10k = totalProd10k - totalSold10k;
                 let netCash = totalCashCollected - totalExpenses;
 
-                let bag5kLeft = Math.floor(stock5k / PACKS_PER_5K_BAG); let pack5kLeft = stock5k % PACKS_PER_5K_BAG;
-                let bag10kLeft = Math.floor(stock10k / PACKS_PER_10K_BAG); let pack10kLeft = stock10k % PACKS_PER_10K_BAG;
+                let formatPackStr = (total, perBag) => {
+                    let isNeg = total < 0;
+                    let val = Math.abs(total);
+                    let b = Math.floor(val / perBag);
+                    let p = val % perBag;
+                    let str = (b > 0 ? `${b} အိတ် ` : '') + (p > 0 ? `${p} ပါကင်` : '');
+                    if (str === '') str = '0 ပါကင်';
+                    return isNeg ? `- ${str}` : str;
+                };
 
                 document.getElementById('displayRawTea').innerText = totalRawTeaViss + " ပိဿာ";
-                document.getElementById('displayStock5k').innerHTML = `${stock5k} ပါကင် ` + (stock5k >= PACKS_PER_5K_BAG ? `<br><small style="color: #666;">(${bag5kLeft} အိတ်, ${pack5kLeft} ပါကင်)</small>` : '');
-                document.getElementById('displayStock10k').innerHTML = `${stock10k} ပါကင် ` + (stock10k >= PACKS_PER_10K_BAG ? `<br><small style="color: #666;">(${bag10kLeft} အိတ်, ${pack10kLeft} ပါကင်)</small>` : '');
+                
+                // 📌 ရောင်းတာရော ကျန်တာရော (၂) ကြောင်း ခွဲပြပေးထားပါတယ်
+                document.getElementById('displayStock5k').innerHTML = `
+                    <div style="color: #1976d2; font-size: 14px; margin-top: 8px;">ရောင်း : ${formatPackStr(totalSold5k, PACKS_PER_5K_BAG)}</div>
+                    <div style="color: ${stock5k < 0 ? '#d32f2f' : '#2e7d32'}; font-size: 14px; margin-top: 5px;">ကျန် : ${formatPackStr(stock5k, PACKS_PER_5K_BAG)}</div>
+                `;
+                
+                document.getElementById('displayStock10k').innerHTML = `
+                    <div style="color: #1976d2; font-size: 14px; margin-top: 8px;">ရောင်း : ${formatPackStr(totalSold10k, PACKS_PER_10K_BAG)}</div>
+                    <div style="color: ${stock10k < 0 ? '#d32f2f' : '#2e7d32'}; font-size: 14px; margin-top: 5px;">ကျန် : ${formatPackStr(stock10k, PACKS_PER_10K_BAG)}</div>
+                `;
+
                 document.getElementById('displayTotalDebt').innerText = totalDebt.toLocaleString();
                 document.getElementById('displayTotalExpenses').innerText = totalExpenses.toLocaleString();
                 document.getElementById('displayNetCash').innerText = netCash.toLocaleString();
