@@ -82,6 +82,7 @@
                     <input type="text" id="cusName" list="customerList" placeholder="အမည်ရိုက်ပါ..." oninput="autoCalculateDiscount()">
                     <datalist id="customerList">
                         <option value="ဖွားမြရီဆိုင် (ကိုယ်စားလှယ်)">
+                        <option value="ဖွားမြရီဆိုင် (အကြွေးဟောင်း)">
                     </datalist>
                 </div>
                 <div class="flex-row">
@@ -101,7 +102,7 @@
                     <div class="form-group"><input type="number" id="sold10kPack" placeholder="ပါကင်ရေ"></div>
                 </div>
                 <div class="flex-row">
-                    <div class="form-group"><label>အိတ်ဖိုး:</label><input type="number" id="bagFee" placeholder="၀"></div>
+                    <div class="form-group"><label>အိတ်ဖိုး / အကြွေးဟောင်းသွင်းရန်:</label><input type="number" id="bagFee" placeholder="၀"></div>
                     <div class="form-group"><label style="color:#1976d2;">လျှော့ငွေ (Discount):</label><input type="number" id="discount" placeholder="၀"></div>
                 </div>
                 <div class="form-group"><label>ပေးချေငွေ:</label><input type="number" id="paidAmount" placeholder="၀"></div>
@@ -150,19 +151,15 @@
             loadData();
         });
 
-        // 📌 ဖွားမြရီဆိုင်အတွက် Automation တွက်ချက်သည့် Function
         function autoCalculateDiscount() {
             const name = document.getElementById('cusName').value;
             const bag5 = parseInt(document.getElementById('sold5kBag').value) || 0;
             const bag10 = parseInt(document.getElementById('sold10kBag').value) || 0;
             const discountInput = document.getElementById('discount');
 
-            // အမည်မှာ "ဖွားမြရီ" ပါတာနဲ့ တစ်အိတ် ၇၅၀၀ နှုန်းဖြင့် အလိုလိုတွက်ပေးပါမည်
             if (name.includes("ဖွားမြရီ")) {
                 const totalBags = bag5 + bag10;
                 discountInput.value = totalBags * 7500;
-            } else {
-                // တခြားဝယ်သူဆိုလျှင် ၀ ထားပါမည် (သို့မဟုတ် ကိုယ်တိုင်ရိုက်ထည့်နိုင်ပါသည်)
             }
         }
 
@@ -256,7 +253,14 @@
 
         async function loadData() {
             try {
-                let res = await fetch(SERVER_URL + '/api/data'); let data = await res.json();
+                // 📌 Server ဆီက ဒေတာတောင်းနေချိန် ဇယားထဲမှာ စာသားလေး အရင်ပြထားပါမည်
+                document.getElementById('prodLogBody').innerHTML = '<tr><td colspan="7" style="color:#1976d2; font-weight:bold;">⏳ Server မှ ဒေတာ ဆွဲယူနေပါသည်... ခဏစောင့်ပါ...</td></tr>';
+                document.getElementById('voucherLogBody').innerHTML = '<tr><td colspan="11" style="color:#1976d2; font-weight:bold;">⏳ Server မှ ဒေတာ ဆွဲယူနေပါသည်... ခဏစောင့်ပါ...</td></tr>';
+
+                let res = await fetch(SERVER_URL + '/api/data'); 
+                if (!res.ok) throw new Error("Server sleeping");
+                
+                let data = await res.json();
                 let prodLogs = data.prodLogs || []; let vouchers = data.vouchers || [];
                 let rawMaterials = data.rawMaterials || [];
 
@@ -271,9 +275,9 @@
                 });
                 document.getElementById('voucherLogBody').innerHTML = vHTML || '<tr><td colspan="11">မှတ်တမ်းမရှိ</td></tr>';
 
-                let tRaw = 0; let tExp = 0; rawMaterials.forEach(r => { tRaw += r.viss; tExp += r.cost; });
-                let p5 = 0; let p10 = 0; prodLogs.forEach(l => { p5 += parsePacks(l.prod5kStr, 25); p10 += parsePacks(l.prod10kStr, 24); tExp += l.totalExp; });
-                let s5 = 0; let s10 = 0; let tPaid = 0; vouchers.forEach(v => { s5 += parsePacks(v.sold5kStr, 25); s10 += parsePacks(v.sold10kStr, 24); tPaid += v.paidAmount; });
+                let tRaw = 0; let tExp = 0; rawMaterials.forEach(r => { tRaw += (r.viss || 0); tExp += (r.cost || 0); });
+                let p5 = 0; let p10 = 0; prodLogs.forEach(l => { p5 += parsePacks(l.prod5kStr, 25); p10 += parsePacks(l.prod10kStr, 24); tExp += (l.totalExp || 0); });
+                let s5 = 0; let s10 = 0; let tPaid = 0; vouchers.forEach(v => { s5 += parsePacks(v.sold5kStr, 25); s10 += parsePacks(v.sold10kStr, 24); tPaid += (v.paidAmount || 0); });
 
                 let formatP = (val, per) => { let isN = val < 0; let v = Math.abs(val); let b = Math.floor(v/per); let p = v%per; let s = (b>0?`${b}အိတ် `:'')+(p>0?`${p}ပါကင်`:''); return (isN?'- ':'')+ (s===''?'0':s); };
                 document.getElementById('displayRawTea').innerText = tRaw + " ပိဿာ";
@@ -282,7 +286,11 @@
                 document.getElementById('displayTotalDebt').innerText = totalDebt.toLocaleString();
                 document.getElementById('displayTotalExpenses').innerText = tExp.toLocaleString();
                 document.getElementById('displayNetCash').innerText = (tPaid - tExp).toLocaleString();
-            } catch (e) { }
+            } catch (e) {
+                // 📌 Server အိပ်နေလို့ Error တက်သွားလျှင် ဤစာသား ပြပေးပါမည်
+                document.getElementById('prodLogBody').innerHTML = '<tr><td colspan="7" style="color:#d32f2f; font-weight:bold;">⚠️ Server အိပ်နေပါသည် (၁ မိနစ်ခန့်စောင့်ပြီး Refresh ပြန်လုပ်ပါ)</td></tr>';
+                document.getElementById('voucherLogBody').innerHTML = '<tr><td colspan="11" style="color:#d32f2f; font-weight:bold;">⚠️ Server အိပ်နေပါသည် (၁ မိနစ်ခန့်စောင့်ပြီး Refresh ပြန်လုပ်ပါ)</td></tr>';
+            }
         }
     </script>
 </body>
