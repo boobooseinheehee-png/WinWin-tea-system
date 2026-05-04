@@ -7,30 +7,34 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Cloud MongoDB (Atlas) ချိတ်ဆက်ခြင်း - VPN/SRV Bypass
+// Cloud MongoDB (Atlas) ချိတ်ဆက်ခြင်း
 const mongoURI = process.env.MONGO_URI;
 
 mongoose.connect(mongoURI)
     .then(() => console.log("✅ Cloud MongoDB (Atlas) ချိတ်ဆက်မှု အောင်မြင်ပါသည်"))
     .catch(err => console.error("❌ Cloud MongoDB ချိတ်ဆက်မှု မအောင်မြင်ပါ:", err));
 
-// 1. ထုတ်လုပ်မှုနှင့် စရိတ် မှတ်တမ်း Schema
+// 1. ထုတ်လုပ်မှုနှင့် စရိတ် မှတ်တမ်း Schema (ကုန်ကျစရိတ်ဘက် - ကားခ/Deli ခ ဒီမှာပါမည်)
 const ProdLogSchema = new mongoose.Schema({
     date: String,
     prod5kStr: String,
     prod10kStr: String,
     laborCost: Number,
     materialsCost: Number,
+    deliFee: Number,    // အိတ်လာတင်ပေးသော အလုပ်သမားခ/ကားခ (အသစ်)
     totalExp: Number
 });
 const ProdLog = mongoose.model('ProdLog', ProdLogSchema);
 
-// 2. အရောင်းဘောက်ချာ Schema
+// 2. အရောင်းဘောက်ချာ Schema (အရောင်းဘက် - ဖုန်း၊ လိပ်စာ၊ အိတ်ဖိုး ဒီမှာပါမည်)
 const VoucherSchema = new mongoose.Schema({
     date: String,
     name: String,
+    phone: String,     // ဖုန်းနံပါတ် (အသစ်)
+    address: String,   // လိပ်စာ/ရွာ (အသစ်)
     sold5kStr: String,
     sold10kStr: String,
+    bagFee: Number,    // ဝယ်သူထံမှ ကောက်ခံသော အိတ်ဖိုး (အသစ်)
     totalCost: Number,
     paidAmount: Number,
     debt: Number
@@ -39,7 +43,7 @@ const Voucher = mongoose.model('Voucher', VoucherSchema);
 
 // --- API Endpoints ---
 app.get('/', (req, res) => {
-    res.send("Bhin Hub Tea Server is running!");
+    res.send("Win Win Tea Server Version 2.0 is running!");
 });
 
 // မှတ်တမ်းများအားလုံးကို ဆွဲထုတ်ရန် (GET)
@@ -52,6 +56,7 @@ app.get('/api/data', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
 // ထုတ်လုပ်မှု မှတ်တမ်းသစ် ထည့်ရန် (POST)
 app.post('/api/production', async (req, res) => {
     try {
@@ -73,6 +78,7 @@ app.post('/api/voucher', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`🚀 Server is running on port ${PORT}`);
