@@ -14,6 +14,15 @@ mongoose.connect(mongoURI)
     .then(() => console.log("✅ Cloud MongoDB (Atlas) ချိတ်ဆက်မှု အောင်မြင်ပါသည်"))
     .catch(err => console.error("❌ Cloud MongoDB ချိတ်ဆက်မှု မအောင်မြင်ပါ:", err));
 
+// ၁။ ကုန်ကြမ်း Database အသစ်
+const RawMaterialSchema = new mongoose.Schema({
+    date: String,
+    viss: Number,
+    cost: Number
+});
+const RawMaterial = mongoose.model('RawMaterial', RawMaterialSchema);
+
+// ၂။ ထုတ်လုပ်မှု မှတ်တမ်း Schema
 const ProdLogSchema = new mongoose.Schema({
     date: String,
     prod5kStr: String,
@@ -25,6 +34,7 @@ const ProdLogSchema = new mongoose.Schema({
 });
 const ProdLog = mongoose.model('ProdLog', ProdLogSchema);
 
+// ၃။ အရောင်းဘောက်ချာ Schema
 const VoucherSchema = new mongoose.Schema({
     date: String,
     name: String,
@@ -39,30 +49,46 @@ const VoucherSchema = new mongoose.Schema({
 });
 const Voucher = mongoose.model('Voucher', VoucherSchema);
 
+// --- API Endpoints ---
 app.get('/', (req, res) => {
-    res.send("Win Win Tea Server Version 2.0 is running!");
+    res.send("Win Win Tea Server is running fully on Cloud!");
 });
 
+// Data အားလုံးကို Cloud မှ ဆွဲယူရန် (ကုန်ကြမ်းပါ ပါဝင်လာသည်)
 app.get('/api/data', async (req, res) => {
     try {
+        const rawMaterials = await RawMaterial.find();
         const prodLogs = await ProdLog.find();
         const vouchers = await Voucher.find();
-        res.json({ prodLogs, vouchers });
+        res.json({ rawMaterials, prodLogs, vouchers });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
+// ကုန်ကြမ်း အသစ်ထည့်ရန်
+app.post('/api/raw', async (req, res) => {
+    try {
+        const newRaw = new RawMaterial(req.body);
+        await newRaw.save();
+        res.status(201).json({ message: "ကုန်ကြမ်း သိမ်းဆည်းပြီးပါပြီ", data: newRaw });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ထုတ်လုပ်မှု အသစ်ထည့်ရန်
 app.post('/api/production', async (req, res) => {
     try {
         const newLog = new ProdLog(req.body);
         await newLog.save();
-        res.status(201).json({ message: "ထုတ်လုပ်မှု မှတ်တမ်း သိမ်းဆည်းပြီးပါပြီ", data: newLog });
+        res.status(201).json({ message: "ထုတ်လုပ်မှု သိမ်းဆည်းပြီးပါပြီ", data: newLog });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
+// ဘောက်ချာ အသစ်ထည့်ရန်
 app.post('/api/voucher', async (req, res) => {
     try {
         const newVoucher = new Voucher(req.body);
@@ -73,7 +99,7 @@ app.post('/api/voucher', async (req, res) => {
     }
 });
 
-// 📌 အကြွေးဆပ်ရန် လမ်းကြောင်း 
+// အကြွေးဆပ်ရန်
 app.put('/api/voucher/:id/pay', async (req, res) => {
     try {
         const voucherId = req.params.id;
