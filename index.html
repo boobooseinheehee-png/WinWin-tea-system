@@ -5,165 +5,318 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ဝင်းဝင်းလ္ဘက်ခြောက် စီမံခန့်ခွဲမှုစနစ်</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f9f4; margin: 0; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        body { font-family: Arial, sans-serif; background-color: #f4f9f4; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; background: #ffffff; padding: 20px 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1 { color: #2e7d32; text-align: center; }
         .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         .card { background: #e8f5e9; padding: 15px; border-radius: 8px; border-left: 5px solid #4caf50; margin-bottom: 20px; }
+        .card h3 { margin-top: 0; color: #1b5e20; border-bottom: 1px solid #c8e6c9; padding-bottom: 5px; font-size: 16px; }
         .form-group { margin-bottom: 10px; }
-        label { display: block; font-weight: bold; font-size: 13px; margin-bottom: 5px; }
-        input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background: #4caf50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 20px; }
-        .dash-box { background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid #c8e6c9; }
-        .dash-box span { display: block; font-size: 18px; color: #d32f2f; margin-top: 5px; font-weight: bold; }
-        table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+        label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 13px; }
+        input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px; }
+        input[type="date"] { border-color: #4caf50; background-color: #f1f8e9; }
+        button { width: 100%; padding: 10px; background-color: #4caf50; color: white; border: none; border-radius: 5px; font-size: 15px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        button:hover { background-color: #388e3c; }
+        .action-btn { padding: 5px 10px; font-size: 12px; background-color: #ff9800; width: auto; margin-top: 0; border-radius: 3px; cursor: pointer; border: none; color: white; font-weight: bold; }
+        .action-btn:hover { background-color: #e68a00; }
+        .dashboard { margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; text-align: center; }
+        .dash-box { background: white; padding: 15px; border-radius: 5px; font-size: 14px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid #c8e6c9; }
+        .dash-box span { display: block; font-size: 18px; color: #d32f2f; margin-top: 8px; }
+        .income-text { color: #2e7d32 !important; }
+        .table-responsive { overflow-x: auto; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        th { background: #4caf50; color: white; }
+        th { background-color: #4caf50; color: white; }
         .status-debt { color: #d32f2f; font-weight: bold; }
-        .action-btn { background: #ff9800; color: white; padding: 5px; border: none; border-radius: 3px; cursor: pointer; }
+        .flex-row { display: flex; gap: 10px; }
+        .flex-row .form-group { flex: 1; }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <h1 style="text-align:center; color:#2e7d32;">🍃 ဝင်းဝင်းလ္ဘက်ခြောက် စီမံခန့်ခွဲမှုစနစ်</h1>
-        
+        <h1>🍃 ဝင်းဝင်းလ္ဘက်ခြောက် စီမံခန့်ခွဲမှုစနစ်</h1>
+
         <div class="grid-3">
             <div class="card">
-                <h3>📦 ကုန်ကြမ်း</h3>
+                <h3>📦 ကုန်ကြမ်း ဝယ်ယူမှု</h3>
                 <div class="form-group"><label>ရက်စွဲ:</label><input type="date" id="dateRawTea"></div>
-                <div class="form-group"><label>ပိဿာ:</label><input type="number" id="rawTeaViss"></div>
-                <div class="form-group"><label>ကျသင့်ငွေ:</label><input type="number" id="rawTeaCost"></div>
-                <button onclick="saveRaw()">သိမ်းမည်</button>
+                <div class="form-group"><label>လက်ဖက်အကြမ်း (ပိဿာ):</label><input type="number" id="rawTeaViss" placeholder="၀"></div>
+                <div class="form-group"><label>စုစုပေါင်း ကျသင့်ငွေ (ကျပ်):</label><input type="number" id="rawTeaCost" placeholder="၀"></div>
+                <button onclick="saveRawMaterials()">ကုန်ကြမ်း စာရင်းသွင်းမည်</button>
             </div>
-            
+
             <div class="card">
-                <h3>🛠 ထုတ်လုပ်မှု</h3>
-                <div class="form-group"><input type="date" id="dateProd"></div>
-                <label>၅ ကျပ်သား (အိတ် / ပါကင်):</label>
-                <div style="display:flex; gap:5px;"><input type="number" id="p5b" placeholder="အိတ်"><input type="number" id="p5p" placeholder="ပါကင်"></div>
-                <label>၁၀ ကျပ်သား (အိတ် / ပါကင်):</label>
-                <div style="display:flex; gap:5px;"><input type="number" id="p10b" placeholder="အိတ်"><input type="number" id="p10p" placeholder="ပါကင်"></div>
-                <label>ကားခ/Deli:</label><input type="number" id="expDeli">
-                <button onclick="saveProd()" style="margin-top:10px;">သိမ်းမည်</button>
+                <h3>🛠 ထုတ်လုပ်မှု နှင့် ကုန်ကျစရိတ်</h3>
+                <div class="form-group"><label>ရက်စွဲ:</label><input type="date" id="dateProd"></div>
+                
+                <label style="color: #1b5e20;">၅ ကျပ်သား (ထွက်)</label>
+                <div class="flex-row">
+                    <div class="form-group"><input type="number" id="prod5kBag" placeholder="အိတ်ရေ"></div>
+                    <div class="form-group"><input type="number" id="prod5kPack" placeholder="ပါကင်ရေ"></div>
+                </div>
+                
+                <label style="color: #1b5e20;">၁၀ ကျပ်သား (ထွက်)</label>
+                <div class="flex-row">
+                    <div class="form-group"><input type="number" id="prod10kBag" placeholder="အိတ်ရေ"></div>
+                    <div class="form-group"><input type="number" id="prod10kPack" placeholder="ပါကင်ရေ"></div>
+                </div>
+
+                <hr style="border: 0.5px solid #c8e6c9; margin: 10px 0;">
+                
+                <div class="flex-row">
+                    <div class="form-group"><label>ပလတ်စတစ်ဖိုး:</label><input type="number" id="expPlastic" placeholder="၀"></div>
+                    <div class="form-group"><label>တံဆိပ်ဖိုး:</label><input type="number" id="expLabel" placeholder="၀"></div>
+                </div>
+                <div class="flex-row">
+                    <div class="form-group"><label>ဖယောင်းတိုင်ဖိုး:</label><input type="number" id="expCandle" placeholder="၀"></div>
+                    <div class="form-group"><label>အိမ်သုံးစရိတ်:</label><input type="number" id="expOther" placeholder="၀"></div>
+                </div>
+                <div class="form-group"><label style="color: #d32f2f;">ကားခ / Deli ခ (ကျပ်):</label><input type="number" id="expDeli" placeholder="၀"></div>
+                <button onclick="saveProduction()">ထုတ်လုပ်မှု သွင်းမည်</button>
             </div>
 
             <div class="card">
                 <h3>🧾 အရောင်းဘောက်ချာ</h3>
-                <div class="form-group"><input type="date" id="dateVoucher"></div>
-                <input type="text" id="cusName" list="cl" placeholder="ဝယ်သူအမည်" oninput="autoD()"><datalist id="cl"><option value="ဖွားမြရီဆိုင် (ကိုယ်စားလှယ်)"></datalist>
-                <div style="display:flex; gap:5px; margin: 10px 0;">
-                    <input type="number" id="s5b" placeholder="၅ကျပ်(အိတ်)" oninput="autoD()"><input type="number" id="s10b" placeholder="၁၀ကျပ်(အိတ်)" oninput="autoD()">
+                <div class="form-group"><label>ရက်စွဲ:</label><input type="date" id="dateVoucher"></div>
+                <div class="form-group">
+                    <label>ဝယ်သူ အမည်:</label>
+                    <input type="text" id="cusName" list="customerList" placeholder="အမည်ရိုက်ပါ..." oninput="autoCalculateDiscount()">
+                    <datalist id="customerList">
+                        <option value="ဖွားမြရီဆိုင် (ကိုယ်စားလှယ်)">
+                        <option value="ဖွားမြရီဆိုင် (အကြွေးဟောင်း)">
+                    </datalist>
                 </div>
-                <div style="display:flex; gap:5px; margin-bottom:10px;">
-                    <input type="number" id="bagFee" placeholder="အိတ်ဖိုး/အကြွေးဟောင်း"><input type="number" id="discount" placeholder="လျှော့ငွေ">
+
+                <div class="flex-row">
+                    <div class="form-group"><label>ဖုန်းနံပါတ်:</label><input type="text" id="cusPhone" placeholder="၀၉..."></div>
+                    <div class="form-group"><label>လိပ်စာ / ရွာ:</label><input type="text" id="cusAddress" placeholder="မြင်းခြံ"></div>
                 </div>
-                <input type="number" id="paid" placeholder="ပေးချေငွေ" style="margin-bottom:10px;">
-                <button onclick="saveVoucher()">ဘောက်ချာဖြတ်မည်</button>
+
+                <div class="form-group"><label style="color:#d32f2f;">၁ ပါကင် စျေးနှုန်း:</label><input type="number" id="pricePerPack" value="12500" oninput="autoCalculateDiscount()"></div>
+                
+                <label style="color: #1b5e20;">၅ ကျပ်သား (ရောင်း)</label>
+                <div class="flex-row">
+                    <div class="form-group"><input type="number" id="sold5kBag" placeholder="အိတ်ရေ" oninput="autoCalculateDiscount()"></div>
+                    <div class="form-group"><input type="number" id="sold5kPack" placeholder="ပါကင်ရေ"></div>
+                </div>
+                
+                <label style="color: #1b5e20;">၁၀ ကျပ်သား (ရောင်း)</label>
+                <div class="flex-row">
+                    <div class="form-group"><input type="number" id="sold10kBag" placeholder="အိတ်ရေ" oninput="autoCalculateDiscount()"></div>
+                    <div class="form-group"><input type="number" id="sold10kPack" placeholder="ပါကင်ရေ"></div>
+                </div>
+
+                <hr style="border: 0.5px solid #c8e6c9; margin: 10px 0;">
+                <div class="flex-row">
+                    <div class="form-group"><label>အိတ်ဖိုး / အကြွေးဟောင်း:</label><input type="number" id="bagFee" placeholder="၀"></div>
+                    <div class="form-group"><label style="color:#1976d2;">လျှော့ငွေ (Discount):</label><input type="number" id="discount" placeholder="၀"></div>
+                </div>
+                
+                <div class="form-group"><label>ပေးချေငွေ:</label><input type="number" id="paidAmount" placeholder="၀"></div>
+                <button onclick="saveVoucher()">ဘောက်ချာ ဖြတ်မည်</button>
             </div>
         </div>
 
         <div class="dashboard">
-            <div class="dash-box">ကုန်ကြမ်းလက်ကျန်<span id="dRaw">0</span></div>
-            <div class="dash-box">၅ ကျပ်သား<span id="d5k">0</span></div>
-            <div class="dash-box">၁၀ ကျပ်သား<span id="d10k">0</span></div>
-            <div class="dash-box">စုစုပေါင်းအကြွေး<span id="dDebt">0</span></div>
-            <div class="dash-box">စုစုပေါင်းထွက်ငွေ<span id="dExp">0</span></div>
-            <div class="dash-box">အသားတင်ငွေ<span id="dCash" style="color:#2e7d32;">0</span></div>
+            <div class="dash-box">ကုန်ကြမ်း လက်ကျန်<span id="displayRawTea">0 ပိဿာ</span></div>
+            <div class="dash-box">၅ ကျပ်သား<span id="displayStock5k">0</span></div>
+            <div class="dash-box">၁၀ ကျပ်သား<span id="displayStock10k">0</span></div>
+            <div class="dash-box">စုစုပေါင်း ရရန်(အကြွေး)<span class="income-text" id="displayTotalDebt">0</span></div>
+            <div class="dash-box">စုစုပေါင်း ထွက်ငွေ<span id="displayTotalExpenses">0</span></div>
+            <div class="dash-box">အသားတင် လက်ကျန်ငွေ<span class="income-text" id="displayNetCash">0</span></div>
         </div>
 
-        <div class="card" style="background:white; margin-top:20px;">
-            <h3>📋 အရောင်းမှတ်တမ်း</h3>
-            <div style="overflow-x:auto;"><table id="vTable"><thead><tr><th>ရက်စွဲ</th><th>ဝယ်သူ</th><th>၅ကျပ်</th><th>၁၀ကျပ်</th><th>လျှော့ငွေ</th><th>ကျသင့်</th><th>ပေးငွေ</th><th>အကြွေး</th><th>Action</th></tr></thead><tbody></tbody></table></div>
+        <div class="card" style="background: #fff; margin-top:20px;">
+            <h3 style="margin: 0 0 10px 0; color: #1b5e20;">📊 နေ့စဉ် ထုတ်လုပ်မှု နှင့် စရိတ် မှတ်တမ်း</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead><tr><th>ရက်စွဲ</th><th>၅ ကျပ်သား</th><th>၁၀ ကျပ်သား</th><th>လုပ်အားခ</th><th>ပစ္စည်းစရိတ်</th><th>ကားခ/Deli</th><th>စုစုပေါင်း</th></tr></thead>
+                    <tbody id="prodLogBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card" style="background: #fff;">
+            <h3 style="margin: 0 0 10px 0; color: #1b5e20;">📋 ဝယ်သူမှတ်တမ်း နှင့် အကြွေးစာရင်း</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead><tr><th>ရက်စွဲ</th><th>ဝယ်သူအချက်အလက်</th><th>၅ ကျပ်သား</th><th>၁၀ ကျပ်သား</th><th>အိတ်ဖိုး</th><th>လျှော့ငွေ</th><th>ကျသင့်ငွေ</th><th>ပေးငွေ</th><th>ကျန်ငွေ</th><th>Action</th></tr></thead>
+                    <tbody id="voucherLogBody"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script>
-        const SV = "https://winwin-tea-system.onrender.com";
-        const P5 = 25, P10 = 24, PRICE = 12500;
+        const SERVER_URL = "https://winwin-tea-system.onrender.com";
+        const PACKS_PER_5K_BAG = 25; 
+        const PACKS_PER_10K_BAG = 24;
 
         document.addEventListener("DOMContentLoaded", () => {
-            document.querySelectorAll('input[type="date"]').forEach(i => i.value = new Date().toISOString().split('T')[0]);
-            load();
+            let today = new Date().toISOString().split('T')[0];
+            document.getElementById('dateRawTea').value = today;
+            document.getElementById('dateProd').value = today;
+            document.getElementById('dateVoucher').value = today;
+            loadData();
         });
 
-        function autoD() {
+        function autoCalculateDiscount() {
             const name = document.getElementById('cusName').value;
-            const b5 = parseInt(document.getElementById('s5b').value) || 0;
-            const b10 = parseInt(document.getElementById('s10b').value) || 0;
-            if (name.includes("ဖွားမြရီ")) document.getElementById('discount').value = (b5 + b10) * 7500;
+            const bag5 = parseInt(document.getElementById('sold5kBag').value) || 0;
+            const bag10 = parseInt(document.getElementById('sold10kBag').value) || 0;
+            const discountInput = document.getElementById('discount');
+
+            if (name.includes("ဖွားမြရီ")) {
+                const totalBags = bag5 + bag10;
+                discountInput.value = totalBags * 7500;
+            }
         }
 
-        async function saveRaw() {
-            const viss = parseFloat(document.getElementById('rawTeaViss').value) || 0;
-            const cost = parseFloat(document.getElementById('rawTeaCost').value) || 0;
-            await fetch(SV+'/api/raw', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({date:document.getElementById('dateRawTea').value, viss, cost}) });
-            load();
+        function formatDate(dateStr) {
+            if(!dateStr) return "-";
+            let parts = dateStr.split('-');
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
         }
 
-        async function saveProd() {
-            const b5 = parseInt(document.getElementById('p5b').value) || 0, p5 = parseInt(document.getElementById('p5p').value) || 0;
-            const b10 = parseInt(document.getElementById('p10b').value) || 0, p10 = parseInt(document.getElementById('p10p').value) || 0;
-            const deli = parseFloat(document.getElementById('expDeli').value) || 0;
-            const labor = ((b5*P5+p5)*160) + ((b10*P10+p10)*140);
-            const payload = {
-                date: document.getElementById('dateProd').value,
-                prod5kStr: `${b5}အိတ် ${p5}ပါကင်`, prod10kStr: `${b10}အိတ် ${p10}ပါကင်`,
-                laborCost: labor, materialsCost: 0, deliFee: deli, totalExp: labor + deli
-            };
-            await fetch(SV+'/api/production', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
-            load();
-        }
-
-        async function saveVoucher() {
-            const b5 = parseInt(document.getElementById('s5b').value) || 0, b10 = parseInt(document.getElementById('s10b').value) || 0;
-            const bagFee = parseFloat(document.getElementById('bagFee').value) || 0, disc = parseFloat(document.getElementById('discount').value) || 0;
-            const paid = parseFloat(document.getElementById('paid').value) || 0;
-            const total = ((b5*P5 + b10*P10) * PRICE) + bagFee - disc;
-            const payload = {
-                date: document.getElementById('dateVoucher').value, name: document.getElementById('cusName').value,
-                sold5kStr: `${b5}အိတ်`, sold10kStr: `${b10}အိတ်`, bagFee, discount: disc, totalCost: total, paidAmount: paid, debt: Math.max(0, total - paid)
-            };
-            await fetch(SV+'/api/voucher', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
-            load();
-        }
-
-        async function pay(id) {
-            const amt = prompt("ဆပ်မည့်ငွေ:"); if(!amt) return;
-            await fetch(`${SV}/api/voucher/${id}/pay`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({payAmount:parseFloat(amt)}) });
-            load();
-        }
-
-        function parse(s, p) {
-            if(!s || s==='-') return 0;
+        function parsePacks(str, packsPerBag) {
+            if (!str || str === '-') return 0;
             let total = 0;
-            let b = s.match(/(\d+)အိတ်/); if(b) total += b[1]*p;
-            let pk = s.match(/(\d+)ပါကင်/); if(pk) total += parseInt(pk[1]);
+            let bagMatch = str.match(/(\d+)\s*အိတ်/);
+            if (bagMatch) total += parseInt(bagMatch[1]) * packsPerBag;
+            let packMatch = str.match(/(\d+)\s*ပါကင်/);
+            if (packMatch) total += parseInt(packMatch[1]);
             return total;
         }
 
-        async function load() {
+        async function saveRawMaterials() {
+            let viss = parseFloat(document.getElementById('rawTeaViss').value) || 0;
+            let cost = parseFloat(document.getElementById('rawTeaCost').value) || 0;
+            if(viss === 0 && cost === 0) return;
+            let dbPayload = { date: formatDate(document.getElementById('dateRawTea').value), viss, cost };
             try {
-                const res = await fetch(SV+'/api/data'); const d = await res.json();
-                let tr = 0, te = 0, p5 = 0, p10 = 0, s5 = 0, s10 = 0, tp = 0, td = 0;
+                await fetch(SERVER_URL + '/api/raw', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dbPayload) });
+                document.getElementById('rawTeaViss').value = ''; document.getElementById('rawTeaCost').value = '';
+                loadData();
+            } catch (error) { alert("❌ Server Error"); }
+        }
+
+        async function saveProduction() {
+            let bag5k = parseInt(document.getElementById('prod5kBag').value) || 0;
+            let pack5k = parseInt(document.getElementById('prod5kPack').value) || 0;
+            let bag10k = parseInt(document.getElementById('prod10kBag').value) || 0;
+            let pack10k = parseInt(document.getElementById('prod10kPack').value) || 0;
+            
+            let laborCost = (((bag5k * PACKS_PER_5K_BAG) + pack5k) * 160) + (((bag10k * PACKS_PER_10K_BAG) + pack10k) * 140);
+            let materialsCost = (parseFloat(document.getElementById('expPlastic').value) || 0) + (parseFloat(document.getElementById('expLabel').value) || 0) + (parseFloat(document.getElementById('expCandle').value) || 0) + (parseFloat(document.getElementById('expOther').value) || 0);
+            let expDeli = parseFloat(document.getElementById('expDeli').value) || 0;
+            
+            let dbPayload = {
+                date: formatDate(document.getElementById('dateProd').value),
+                prod5kStr: (bag5k > 0 ? `${bag5k}အိတ် ` : '') + (pack5k > 0 ? `${pack5k}ပါကင်` : '') || '-',
+                prod10kStr: (bag10k > 0 ? `${bag10k}အိတ် ` : '') + (pack10k > 0 ? `${pack10k}ပါကင်` : '') || '-',
+                laborCost: laborCost, materialsCost: materialsCost, deliFee: expDeli, totalExp: laborCost + materialsCost + expDeli
+            };
+            try {
+                await fetch(SERVER_URL + '/api/production', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dbPayload) });
+                ['prod5kBag', 'prod5kPack', 'prod10kBag', 'prod10kPack', 'expPlastic', 'expLabel', 'expCandle', 'expOther', 'expDeli'].forEach(id => document.getElementById(id).value = '');
+                loadData();
+            } catch (error) { alert("❌ Server Error"); }
+        }
+
+        async function saveVoucher() {
+            let bag5k = parseInt(document.getElementById('sold5kBag').value) || 0;
+            let pack5k = parseInt(document.getElementById('sold5kPack').value) || 0;
+            let bag10k = parseInt(document.getElementById('sold10kBag').value) || 0;
+            let pack10k = parseInt(document.getElementById('sold10kPack').value) || 0;
+            
+            let price = parseFloat(document.getElementById('pricePerPack').value) || 12500;
+            let bagFee = parseFloat(document.getElementById('bagFee').value) || 0;
+            let discount = parseFloat(document.getElementById('discount').value) || 0;
+            let paid = parseFloat(document.getElementById('paidAmount').value) || 0;
+
+            let totalPacks = ((bag5k * PACKS_PER_5K_BAG) + pack5k) + ((bag10k * PACKS_PER_10K_BAG) + pack10k);
+            let totalCost = (totalPacks * price) + bagFee - discount;
+
+            let dbPayload = {
+                date: formatDate(document.getElementById('dateVoucher').value),
+                name: document.getElementById('cusName').value || 'အမည်မသိ',
+                phone: document.getElementById('cusPhone').value || '-',
+                address: document.getElementById('cusAddress').value || '-',
+                sold5kStr: (bag5k > 0 ? `${bag5k}အိတ် ` : '') + (pack5k > 0 ? `${pack5k}ပါကင်` : '') || '-',
+                sold10kStr: (bag10k > 0 ? `${bag10k}အိတ် ` : '') + (pack10k > 0 ? `${pack10k}ပါကင်` : '') || '-',
+                bagFee, discount, totalCost, paidAmount: paid, debt: Math.max(0, totalCost - paid)
+            };
+            try {
+                await fetch(SERVER_URL + '/api/voucher', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dbPayload) });
+                ['cusName', 'cusPhone', 'cusAddress', 'sold5kBag', 'sold5kPack', 'sold10kBag', 'sold10kPack', 'bagFee', 'discount', 'paidAmount'].forEach(id => document.getElementById(id).value = '');
+                loadData();
+            } catch (error) { alert("❌ Server Error"); }
+        }
+
+        async function payDebt(id) {
+            let amt = prompt("ဆပ်မည့်ငွေ ပမာဏကို ထည့်ပါ:"); if(!amt) return;
+            try {
+                await fetch(SERVER_URL + `/api/voucher/${id}/pay`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ payAmount: parseFloat(amt) }) });
+                loadData();
+            } catch (error) { alert("❌ Error"); }
+        }
+
+        async function loadData() {
+            try {
+                document.getElementById('prodLogBody').innerHTML = '<tr><td colspan="7" style="color:#1976d2; font-weight:bold;">⏳ Server မှ ဒေတာ ဆွဲယူနေပါသည်...</td></tr>';
+                document.getElementById('voucherLogBody').innerHTML = '<tr><td colspan="10" style="color:#1976d2; font-weight:bold;">⏳ Server မှ ဒေတာ ဆွဲယူနေပါသည်...</td></tr>';
+
+                let res = await fetch(SERVER_URL + '/api/data'); 
+                if (!res.ok) throw new Error("Server sleeping");
                 
-                d.rawMaterials.forEach(r => { tr += r.viss; te += r.cost; });
-                d.prodLogs.forEach(l => { p5 += parse(l.prod5kStr, P5); p10 += parse(l.prod10kStr, P10); te += l.totalExp; });
-                
-                let vh = '';
-                d.vouchers.slice().reverse().forEach(v => {
-                    s5 += parse(v.sold5kStr, P5); s10 += parse(v.sold10kStr, P10);
-                    tp += v.paidAmount; td += v.debt;
-                    vh += `<tr><td>${v.date}</td><td>${v.name}</td><td>${v.sold5kStr}</td><td>${v.sold10kStr}</td><td>${v.discount}</td><td>${v.totalCost}</td><td>${v.paidAmount}</td><td class="status-debt">${v.debt}</td><td>${v.debt>0?`<button class="action-btn" onclick="pay('${v._id}')">ဆပ်</button>`:'-'}</td></tr>`;
+                let data = await res.json();
+                let prodLogs = data.prodLogs || []; let vouchers = data.vouchers || [];
+                let rawMaterials = data.rawMaterials || [];
+
+                let prodHTML = ''; 
+                prodLogs.slice().reverse().forEach(log => {
+                    prodHTML += `<tr><td>${log.date}</td><td>${log.prod5kStr}</td><td>${log.prod10kStr}</td><td>${(log.laborCost||0).toLocaleString()}</td><td>${(log.materialsCost||0).toLocaleString()}</td><td>${(log.deliFee||0).toLocaleString()}</td><td style="color:#d32f2f; font-weight:bold;">${(log.totalExp||0).toLocaleString()}</td></tr>`;
                 });
-                document.querySelector('#vTable tbody').innerHTML = vh;
+                document.getElementById('prodLogBody').innerHTML = prodHTML || '<tr><td colspan="7">မှတ်တမ်းမရှိသေးပါ</td></tr>';
+
+                let vHTML = ''; let totalDebt = 0; 
+                vouchers.slice().reverse().forEach(v => {
+                    totalDebt += (v.debt || 0);
+                    let disc = v.discount ? `<span style="color:#1976d2;">-${v.discount.toLocaleString()}</span>` : '0';
+                    vHTML += `<tr>
+                        <td>${v.date}</td>
+                        <td style="text-align:left;"><b>${v.name}</b><br><span style="font-size:10px; color:#555;">📞 ${v.phone} | 🏠 ${v.address}</span></td>
+                        <td>${v.sold5kStr}</td><td>${v.sold10kStr}</td><td>${(v.bagFee||0).toLocaleString()}</td><td>${disc}</td>
+                        <td>${(v.totalCost||0).toLocaleString()}</td><td>${(v.paidAmount||0).toLocaleString()}</td>
+                        <td class="status-debt">${(v.debt||0).toLocaleString()}</td>
+                        <td>${v.debt > 0 ? `<button class="action-btn" onclick="payDebt('${v._id}')">ဆပ်မည်</button>` : '<span style="color:#2e7d32; font-weight:bold;">ရှင်းပြီး</span>'}</td>
+                    </tr>`;
+                });
+                document.getElementById('voucherLogBody').innerHTML = vHTML || '<tr><td colspan="10">မှတ်တမ်းမရှိသေးပါ</td></tr>';
+
+                let tRaw = 0; let tExp = 0; 
+                rawMaterials.forEach(r => { tRaw += (r.viss || 0); tExp += (r.cost || 0); });
                 
-                document.getElementById('dRaw').innerText = tr + " ပိဿာ";
-                document.getElementById('d5k').innerHTML = `<small>ရောင်း:${s5}</small><br>ကျန်:${p5-s5}`;
-                document.getElementById('d10k').innerHTML = `<small>ရောင်း:${s10}</small><br>ကျန်:${p10-s10}`;
-                document.getElementById('dDebt').innerText = td.toLocaleString();
-                document.getElementById('dExp').innerText = te.toLocaleString();
-                document.getElementById('dCash').innerText = (tp - te).toLocaleString();
-            } catch(e) { console.error(e); }
+                let p5 = 0; let p10 = 0; 
+                prodLogs.forEach(l => { p5 += parsePacks(l.prod5kStr, 25); p10 += parsePacks(l.prod10kStr, 24); tExp += (l.totalExp || 0); });
+                
+                let s5 = 0; let s10 = 0; let tPaid = 0; 
+                vouchers.forEach(v => { s5 += parsePacks(v.sold5kStr, 25); s10 += parsePacks(v.sold10kStr, 24); tPaid += (v.paidAmount || 0); });
+
+                let formatP = (val, per) => { let isN = val < 0; let v = Math.abs(val); let b = Math.floor(v/per); let p = v%per; let s = (b>0?`${b} အိတ် `:'')+(p>0?`${p} ပါကင်`:''); return (isN?'- ':'')+ (s===''?'0 ပါကင်':s); };
+                
+                document.getElementById('displayRawTea').innerText = tRaw + " ပိဿာ";
+                document.getElementById('displayStock5k').innerHTML = `<div style="color: #1976d2; font-size: 14px; margin-top: 8px;">ရောင်း : ${formatP(s5,25)}</div><div style="color: ${p5-s5 < 0 ? '#d32f2f' : '#2e7d32'}; font-size: 14px; margin-top: 5px;">ကျန် : ${formatP(p5-s5,25)}</div>`;
+                document.getElementById('displayStock10k').innerHTML = `<div style="color: #1976d2; font-size: 14px; margin-top: 8px;">ရောင်း : ${formatP(s10,24)}</div><div style="color: ${p10-s10 < 0 ? '#d32f2f' : '#2e7d32'}; font-size: 14px; margin-top: 5px;">ကျန် : ${formatP(p10-s10,24)}</div>`;
+                document.getElementById('displayTotalDebt').innerText = totalDebt.toLocaleString();
+                document.getElementById('displayTotalExpenses').innerText = tExp.toLocaleString();
+                document.getElementById('displayNetCash').innerText = (tPaid - tExp).toLocaleString();
+
+            } catch (e) {
+                document.getElementById('prodLogBody').innerHTML = '<tr><td colspan="7" style="color:#d32f2f; font-weight:bold;">⚠️ Server အိပ်နေပါသည် (၁ မိနစ်ခန့်စောင့်ပြီး Refresh ပြန်လုပ်ပါ)</td></tr>';
+                document.getElementById('voucherLogBody').innerHTML = '<tr><td colspan="10" style="color:#d32f2f; font-weight:bold;">⚠️ Server အိပ်နေပါသည် (၁ မိနစ်ခန့်စောင့်ပြီး Refresh ပြန်လုပ်ပါ)</td></tr>';
+            }
         }
     </script>
 </body>
