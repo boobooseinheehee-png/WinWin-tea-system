@@ -130,7 +130,7 @@
             <h3 style="margin: 0 0 10px 0; color: #1b5e20;">📊 နေ့စဉ် ထုတ်လုပ်မှု နှင့် စရိတ် မှတ်တမ်း</h3>
             <div class="table-responsive">
                 <table>
-                    <thead><tr><th>ရက်စွဲ</th><th>၅ ကျပ်သား</th><th>၁၀ ကျပ်သား</th><th>လုပ်အားခ</th><th>ပစ္စည်းစရိတ်</th><th>ကားခ/Deli</th><th>စုစုပေါင်း</th></tr></thead>
+                    <thead><tr><th>ရက်စွဲ</th><th>၅ ကျပ်သား</th><th>၁၀ ကျပ်သား</th><th>လုပ်အားခ</th><th>ပစ္စည်းစရိတ်</th><th>ကားခ/Deli</th><th>စုစုပေါင်း</th><th>Action</th></tr></thead>
                     <tbody id="prodLogBody"></tbody>
                 </table>
             </div>
@@ -261,9 +261,28 @@
             } catch (error) { alert("❌ Error"); }
         }
 
+        // 📌 အသစ်ထည့်ထားသော ဖျက်ရန် (Delete) Functions များ
+        async function deleteVoucher(id) {
+            if(confirm("⚠️ ဒီမှတ်တမ်းကို တကယ်ဖျက်မှာ သေချာပြီလား? (ပြန်ယူ၍ မရတော့ပါ)")) {
+                try {
+                    await fetch(SERVER_URL + '/api/voucher/' + id, { method: 'DELETE' });
+                    loadData();
+                } catch (error) { alert("❌ ဖျက်၍မရပါ"); }
+            }
+        }
+
+        async function deleteProdLog(id) {
+            if(confirm("⚠️ ဒီထုတ်လုပ်မှုမှတ်တမ်းကို တကယ်ဖျက်မှာ သေချာပြီလား? (ပြန်ယူ၍ မရတော့ပါ)")) {
+                try {
+                    await fetch(SERVER_URL + '/api/production/' + id, { method: 'DELETE' });
+                    loadData();
+                } catch (error) { alert("❌ ဖျက်၍မရပါ"); }
+            }
+        }
+
         async function loadData() {
             try {
-                document.getElementById('prodLogBody').innerHTML = '<tr><td colspan="7" style="color:#1976d2; font-weight:bold;">⏳ Server မှ ဒေတာ ဆွဲယူနေပါသည်...</td></tr>';
+                document.getElementById('prodLogBody').innerHTML = '<tr><td colspan="8" style="color:#1976d2; font-weight:bold;">⏳ Server မှ ဒေတာ ဆွဲယူနေပါသည်...</td></tr>';
                 document.getElementById('voucherLogBody').innerHTML = '<tr><td colspan="10" style="color:#1976d2; font-weight:bold;">⏳ Server မှ ဒေတာ ဆွဲယူနေပါသည်...</td></tr>';
 
                 let res = await fetch(SERVER_URL + '/api/data'); 
@@ -275,21 +294,25 @@
 
                 let prodHTML = ''; 
                 prodLogs.slice().reverse().forEach(log => {
-                    prodHTML += `<tr><td>${log.date}</td><td>${log.prod5kStr}</td><td>${log.prod10kStr}</td><td>${(log.laborCost||0).toLocaleString()}</td><td>${(log.materialsCost||0).toLocaleString()}</td><td>${(log.deliFee||0).toLocaleString()}</td><td style="color:#d32f2f; font-weight:bold;">${(log.totalExp||0).toLocaleString()}</td></tr>`;
+                    prodHTML += `<tr><td>${log.date}</td><td>${log.prod5kStr}</td><td>${log.prod10kStr}</td><td>${(log.laborCost||0).toLocaleString()}</td><td>${(log.materialsCost||0).toLocaleString()}</td><td>${(log.deliFee||0).toLocaleString()}</td><td style="color:#d32f2f; font-weight:bold;">${(log.totalExp||0).toLocaleString()}</td>
+                    <td><button class="action-btn" style="background-color:#d32f2f;" onclick="deleteProdLog('${log._id}')">ဖျက်</button></td></tr>`;
                 });
-                document.getElementById('prodLogBody').innerHTML = prodHTML || '<tr><td colspan="7">မှတ်တမ်းမရှိသေးပါ</td></tr>';
+                document.getElementById('prodLogBody').innerHTML = prodHTML || '<tr><td colspan="8">မှတ်တမ်းမရှိသေးပါ</td></tr>';
 
                 let vHTML = ''; let totalDebt = 0; 
                 vouchers.slice().reverse().forEach(v => {
                     totalDebt += (v.debt || 0);
                     let disc = v.discount ? `<span style="color:#1976d2;">-${v.discount.toLocaleString()}</span>` : '0';
+                    let payBtn = v.debt > 0 ? `<button class="action-btn" onclick="payDebt('${v._id}')">ဆပ်မည်</button>` : '<span style="color:#2e7d32; font-weight:bold;">ရှင်းပြီး</span>';
+                    let delBtn = `<button class="action-btn" style="background-color:#d32f2f; margin-left:5px;" onclick="deleteVoucher('${v._id}')">ဖျက်</button>`;
+                    
                     vHTML += `<tr>
                         <td>${v.date}</td>
                         <td style="text-align:left;"><b>${v.name}</b><br><span style="font-size:10px; color:#555;">📞 ${v.phone} | 🏠 ${v.address}</span></td>
                         <td>${v.sold5kStr}</td><td>${v.sold10kStr}</td><td>${(v.bagFee||0).toLocaleString()}</td><td>${disc}</td>
                         <td>${(v.totalCost||0).toLocaleString()}</td><td>${(v.paidAmount||0).toLocaleString()}</td>
                         <td class="status-debt">${(v.debt||0).toLocaleString()}</td>
-                        <td>${v.debt > 0 ? `<button class="action-btn" onclick="payDebt('${v._id}')">ဆပ်မည်</button>` : '<span style="color:#2e7d32; font-weight:bold;">ရှင်းပြီး</span>'}</td>
+                        <td>${payBtn}${delBtn}</td>
                     </tr>`;
                 });
                 document.getElementById('voucherLogBody').innerHTML = vHTML || '<tr><td colspan="10">မှတ်တမ်းမရှိသေးပါ</td></tr>';
@@ -313,7 +336,7 @@
                 document.getElementById('displayNetCash').innerText = (tPaid - tExp).toLocaleString();
 
             } catch (e) {
-                document.getElementById('prodLogBody').innerHTML = '<tr><td colspan="7" style="color:#d32f2f; font-weight:bold;">⚠️ Server အိပ်နေပါသည် (၁ မိနစ်ခန့်စောင့်ပြီး Refresh ပြန်လုပ်ပါ)</td></tr>';
+                document.getElementById('prodLogBody').innerHTML = '<tr><td colspan="8" style="color:#d32f2f; font-weight:bold;">⚠️ Server အိပ်နေပါသည် (၁ မိနစ်ခန့်စောင့်ပြီး Refresh ပြန်လုပ်ပါ)</td></tr>';
                 document.getElementById('voucherLogBody').innerHTML = '<tr><td colspan="10" style="color:#d32f2f; font-weight:bold;">⚠️ Server အိပ်နေပါသည် (၁ မိနစ်ခန့်စောင့်ပြီး Refresh ပြန်လုပ်ပါ)</td></tr>';
             }
         }
