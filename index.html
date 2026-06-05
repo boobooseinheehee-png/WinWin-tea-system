@@ -7,7 +7,7 @@
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f9f4; margin: 0; padding: 20px; color: #333; }
         .container { max-width: 1200px; margin: 0 auto; background: #ffffff; padding: 20px 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        h1 { color: #2e7d32; text-align: center; }
+        h1 { color: #2e7d32; text-align: center; margin-bottom: 5px;}
         .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         .card { background: #e8f5e9; padding: 15px; border-radius: 8px; border-left: 5px solid #4caf50; margin-bottom: 20px; }
         .card h3 { margin-top: 0; color: #1b5e20; border-bottom: 1px solid #c8e6c9; padding-bottom: 5px; font-size: 16px; }
@@ -34,7 +34,8 @@
 <body>
 
     <div class="container">
-        <h1>🍃 ဝင်းဝင်းလ္ဘက်ခြောက် <span style="font-size: 16px; color: #555;">(v2.6 Auto-Sort)</span></h1>
+        <h1>🍃 ဝင်းဝင်းလ္ဘက်ခြောက် စီမံခန့်ခွဲမှု</h1>
+        <p style="text-align:center; color:#d32f2f; font-weight:bold; margin-top:0;">(v3.0 Final Format)</p>
 
         <div class="grid-3">
             <div class="card">
@@ -172,7 +173,6 @@
             }
         }
 
-        // 📌 ရက်စွဲကို DB သွင်းရန် ပုံစံပြောင်းခြင်း (ဘယ်လိုရိုက်ရိုက် အတိအကျဝင်အောင် ကာကွယ်ထားပါသည်)
         function formatDate(dateStr) {
             if(!dateStr) return "-";
             if(dateStr.includes('/')) return dateStr; 
@@ -284,26 +284,22 @@
             }
         }
 
-        // 📌 မည်သည့် Format ဖြစ်နေပါစေ ဂဏန်းသက်သက်ပြောင်းပြီး အတိအကျ စီပေးမည့် လုံးဝ အမှားကင်းစနစ်!
-        const getSortNumber = (dStr) => {
+        // 📌 ရက်စွဲကို ပြက္ခဒိန်အတိုင်း လုံးဝ အမှားကင်းစစ်ထုတ်မည့် စနစ်သစ်
+        const getTimestamp = (dStr) => {
             if (!dStr || dStr === '-') return 0;
-            let match = dStr.match(/(\d+)/g);
-            if (!match || match.length < 3) return 0;
-            let year, month, day;
-            if (match[0].length === 4) { // YYYY-MM-DD
-                year = match[0]; month = match[1].padStart(2, '0'); day = match[2].padStart(2, '0');
-            } else { // DD/MM/YYYY
-                day = match[0].padStart(2, '0'); month = match[1].padStart(2, '0'); year = match[2];
-            }
-            return parseInt(`${year}${month}${day}`, 10);
+            let p = dStr.trim().split(/[-/]/);
+            if (p.length !== 3) return 0;
+            
+            let year = p[2], month = p[1], day = p[0];
+            if (p[0].length === 4) { year = p[0]; month = p[1]; day = p[2]; } // YYYY-MM-DD
+            
+            return parseInt(`${year}${month.padStart(2, '0')}${day.padStart(2, '0')}`, 10);
         };
 
         const formatDisplayDate = (dStr) => {
             if (!dStr || dStr === '-') return '-';
-            let match = dStr.match(/(\d+)/g);
-            if (match && match.length >= 3 && match[0].length === 4) {
-                return `${match[2].padStart(2, '0')}/${match[1].padStart(2, '0')}/${match[0]}`;
-            }
+            let p = dStr.trim().split(/[-/]/);
+            if (p.length === 3 && p[0].length === 4) return `${p[2].padStart(2, '0')}/${p[1].padStart(2, '0')}/${p[0]}`;
             return dStr;
         };
 
@@ -319,9 +315,15 @@
                 let prodLogs = data.prodLogs || []; let vouchers = data.vouchers || [];
                 let rawMaterials = data.rawMaterials || [];
 
-                // 📌 ကွက်တိ အစဉ်လိုက် ဖြစ်အောင် စီပေးခြင်း (အသစ်ဆုံးက အပေါ်ဆုံး)
-                prodLogs.sort((a, b) => getSortNumber(b.date) - getSortNumber(a.date));
-                vouchers.sort((a, b) => getSortNumber(b.date) - getSortNumber(a.date));
+                // 📌 ကွက်တိ အစဉ်လိုက် ဖြစ်အောင် စီပေးခြင်း (ရက်စွဲတူလျှင် နောက်ဆုံးသွင်းထားတာ အပေါ်ရောက်မည်)
+                prodLogs.sort((a, b) => {
+                    let d = getTimestamp(b.date) - getTimestamp(a.date);
+                    return d === 0 ? (b._id > a._id ? 1 : -1) : d;
+                });
+                vouchers.sort((a, b) => {
+                    let d = getTimestamp(b.date) - getTimestamp(a.date);
+                    return d === 0 ? (b._id > a._id ? 1 : -1) : d;
+                });
 
                 let prodHTML = ''; 
                 prodLogs.forEach(log => {
