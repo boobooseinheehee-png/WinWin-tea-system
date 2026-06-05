@@ -261,7 +261,6 @@
             } catch (error) { alert("❌ Error"); }
         }
 
-        // 📌 အသစ်ထည့်ထားသော ဖျက်ရန် (Delete) Functions များ
         async function deleteVoucher(id) {
             if(confirm("⚠️ ဒီမှတ်တမ်းကို တကယ်ဖျက်မှာ သေချာပြီလား? (ပြန်ယူ၍ မရတော့ပါ)")) {
                 try {
@@ -280,6 +279,13 @@
             }
         }
 
+        // 📌 ရက်စွဲများကို ပြက္ခဒိန်အတိုင်း အလိုလို အစဉ်လိုက် စီပေးမည့် Function
+        const getSortTime = (dStr) => {
+            if(!dStr || dStr === '-') return 0;
+            let p = dStr.split('/');
+            return p.length === 3 ? new Date(`${p[2]}-${p[1]}-${p[0]}`).getTime() : 0;
+        };
+
         async function loadData() {
             try {
                 document.getElementById('prodLogBody').innerHTML = '<tr><td colspan="8" style="color:#1976d2; font-weight:bold;">⏳ Server မှ ဒေတာ ဆွဲယူနေပါသည်...</td></tr>';
@@ -292,15 +298,19 @@
                 let prodLogs = data.prodLogs || []; let vouchers = data.vouchers || [];
                 let rawMaterials = data.rawMaterials || [];
 
+                // 📌 ရက်စွဲအလိုက် အပေါ်ဆုံးမှာ အသစ်ဆုံးပေါ်အောင် စီပေးခြင်း
+                prodLogs.sort((a, b) => getSortTime(b.date) - getSortTime(a.date));
+                vouchers.sort((a, b) => getSortTime(b.date) - getSortTime(a.date));
+
                 let prodHTML = ''; 
-                prodLogs.slice().reverse().forEach(log => {
+                prodLogs.forEach(log => {
                     prodHTML += `<tr><td>${log.date}</td><td>${log.prod5kStr}</td><td>${log.prod10kStr}</td><td>${(log.laborCost||0).toLocaleString()}</td><td>${(log.materialsCost||0).toLocaleString()}</td><td>${(log.deliFee||0).toLocaleString()}</td><td style="color:#d32f2f; font-weight:bold;">${(log.totalExp||0).toLocaleString()}</td>
                     <td><button class="action-btn" style="background-color:#d32f2f;" onclick="deleteProdLog('${log._id}')">ဖျက်</button></td></tr>`;
                 });
                 document.getElementById('prodLogBody').innerHTML = prodHTML || '<tr><td colspan="8">မှတ်တမ်းမရှိသေးပါ</td></tr>';
 
                 let vHTML = ''; let totalDebt = 0; 
-                vouchers.slice().reverse().forEach(v => {
+                vouchers.forEach(v => {
                     totalDebt += (v.debt || 0);
                     let disc = v.discount ? `<span style="color:#1976d2;">-${v.discount.toLocaleString()}</span>` : '0';
                     let payBtn = v.debt > 0 ? `<button class="action-btn" onclick="payDebt('${v._id}')">ဆပ်မည်</button>` : '<span style="color:#2e7d32; font-weight:bold;">ရှင်းပြီး</span>';
