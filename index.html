@@ -34,7 +34,7 @@
 <body>
 
     <div class="container">
-        <h1>🍃 ဝင်းဝင်းလ္ဘက်ခြောက် စီမံခန့်ခွဲမှုစနစ်</h1>
+        <h1>🍃 ဝင်းဝင်းလ္ဘက်ခြောက် <span style="font-size: 16px; color: #555;">(v2.6 Auto-Sort)</span></h1>
 
         <div class="grid-3">
             <div class="card">
@@ -172,10 +172,15 @@
             }
         }
 
+        // 📌 ရက်စွဲကို DB သွင်းရန် ပုံစံပြောင်းခြင်း (ဘယ်လိုရိုက်ရိုက် အတိအကျဝင်အောင် ကာကွယ်ထားပါသည်)
         function formatDate(dateStr) {
             if(!dateStr) return "-";
+            if(dateStr.includes('/')) return dateStr; 
             let parts = dateStr.split('-');
-            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            if(parts.length === 3 && parts[0].length === 4) {
+                return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+            return dateStr;
         }
 
         function parsePacks(str, packsPerBag) {
@@ -262,7 +267,7 @@
         }
 
         async function deleteVoucher(id) {
-            if(confirm("⚠️ ဒီမှတ်တမ်းကို တကယ်ဖျက်မှာ သေချာပြီလား? (ပြန်ယူ၍ မရတော့ပါ)")) {
+            if(confirm("⚠️ ဒီမှတ်တမ်းကို တကယ်ဖျက်မှာ သေချာပြီလား?")) {
                 try {
                     await fetch(SERVER_URL + '/api/voucher/' + id, { method: 'DELETE' });
                     loadData();
@@ -271,7 +276,7 @@
         }
 
         async function deleteProdLog(id) {
-            if(confirm("⚠️ ဒီထုတ်လုပ်မှုမှတ်တမ်းကို တကယ်ဖျက်မှာ သေချာပြီလား? (ပြန်ယူ၍ မရတော့ပါ)")) {
+            if(confirm("⚠️ ဒီထုတ်လုပ်မှုမှတ်တမ်းကို တကယ်ဖျက်မှာ သေချာပြီလား?")) {
                 try {
                     await fetch(SERVER_URL + '/api/production/' + id, { method: 'DELETE' });
                     loadData();
@@ -279,24 +284,25 @@
             }
         }
 
-        // 📌 သင်္ချာဂဏန်းသက်သက်ဖြင့် အစဉ်လိုက် အတိအကျ စီပေးမည့် Function အသစ် (ဘယ်တော့မှ မလွဲနိုင်တော့ပါ)
+        // 📌 မည်သည့် Format ဖြစ်နေပါစေ ဂဏန်းသက်သက်ပြောင်းပြီး အတိအကျ စီပေးမည့် လုံးဝ အမှားကင်းစနစ်!
         const getSortNumber = (dStr) => {
             if (!dStr || dStr === '-') return 0;
-            if (dStr.includes('/')) {
-                let p = dStr.split('/');
-                return parseInt(p[2] + p[1] + p[0], 10); // ဥပမာ: 04/06/2026 -> 20260604
-            } else if (dStr.includes('-')) {
-                let p = dStr.split('-');
-                if (p[0].length === 4) return parseInt(p[0] + p[1] + p[2], 10); // ဥပမာ: 2026-06-04 -> 20260604
+            let match = dStr.match(/(\d+)/g);
+            if (!match || match.length < 3) return 0;
+            let year, month, day;
+            if (match[0].length === 4) { // YYYY-MM-DD
+                year = match[0]; month = match[1].padStart(2, '0'); day = match[2].padStart(2, '0');
+            } else { // DD/MM/YYYY
+                day = match[0].padStart(2, '0'); month = match[1].padStart(2, '0'); year = match[2];
             }
-            return 0;
+            return parseInt(`${year}${month}${day}`, 10);
         };
 
         const formatDisplayDate = (dStr) => {
             if (!dStr || dStr === '-') return '-';
-            if (dStr.includes('-') && dStr.split('-')[0].length === 4) {
-                let p = dStr.split('-');
-                return `${p[2]}/${p[1]}/${p[0]}`;
+            let match = dStr.match(/(\d+)/g);
+            if (match && match.length >= 3 && match[0].length === 4) {
+                return `${match[2].padStart(2, '0')}/${match[1].padStart(2, '0')}/${match[0]}`;
             }
             return dStr;
         };
@@ -313,7 +319,7 @@
                 let prodLogs = data.prodLogs || []; let vouchers = data.vouchers || [];
                 let rawMaterials = data.rawMaterials || [];
 
-                // 📌 ရက်စွဲကို ဂဏန်းပြောင်းပြီး အကြီးဆုံး(နောက်ဆုံးရက်) ကို အပေါ်တင်ပေးခြင်း
+                // 📌 ကွက်တိ အစဉ်လိုက် ဖြစ်အောင် စီပေးခြင်း (အသစ်ဆုံးက အပေါ်ဆုံး)
                 prodLogs.sort((a, b) => getSortNumber(b.date) - getSortNumber(a.date));
                 vouchers.sort((a, b) => getSortNumber(b.date) - getSortNumber(a.date));
 
