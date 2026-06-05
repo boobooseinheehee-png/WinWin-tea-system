@@ -172,7 +172,6 @@
             }
         }
 
-        // ဘောက်ချာဖြတ်သည့်အချိန်တွင် DD/MM/YYYY ပုံစံဖြင့် သိမ်းရန်
         function formatDate(dateStr) {
             if(!dateStr) return "-";
             let parts = dateStr.split('-');
@@ -280,22 +279,19 @@
             }
         }
 
-        // 📌 Database ထဲက ပုံစံဟောင်း(YYYY-MM-DD) တွေကိုပါ နားလည်ပြီး အစဉ်လိုက်စီပေးမည့် Function အသစ်
-        const getSortTime = (dStr) => {
+        // 📌 သင်္ချာဂဏန်းသက်သက်ဖြင့် အစဉ်လိုက် အတိအကျ စီပေးမည့် Function အသစ် (ဘယ်တော့မှ မလွဲနိုင်တော့ပါ)
+        const getSortNumber = (dStr) => {
             if (!dStr || dStr === '-') return 0;
             if (dStr.includes('/')) {
                 let p = dStr.split('/');
-                return new Date(`${p[2]}-${p[1]}-${p[0]}T00:00:00`).getTime() || 0;
+                return parseInt(p[2] + p[1] + p[0], 10); // ဥပမာ: 04/06/2026 -> 20260604
             } else if (dStr.includes('-')) {
                 let p = dStr.split('-');
-                if (p[0].length === 4) {
-                    return new Date(`${dStr}T00:00:00`).getTime() || 0;
-                }
+                if (p[0].length === 4) return parseInt(p[0] + p[1] + p[2], 10); // ဥပမာ: 2026-06-04 -> 20260604
             }
             return 0;
         };
 
-        // 📌 ဇယားထဲမှာ ပြတဲ့အခါ ပုံစံဟောင်းတွေကိုပါ "ရက်/လ/ခုနှစ်" ပြောင်းပေးမည့် Function အသစ်
         const formatDisplayDate = (dStr) => {
             if (!dStr || dStr === '-') return '-';
             if (dStr.includes('-') && dStr.split('-')[0].length === 4) {
@@ -317,13 +313,12 @@
                 let prodLogs = data.prodLogs || []; let vouchers = data.vouchers || [];
                 let rawMaterials = data.rawMaterials || [];
 
-                // 📌 ရက်စွဲအလိုက် အတိအကျ ပြန်စီခြင်း (အသစ်ဆုံး ဘောက်ချာ အပေါ်ရောက်မည်)
-                prodLogs.sort((a, b) => getSortTime(b.date) - getSortTime(a.date));
-                vouchers.sort((a, b) => getSortTime(b.date) - getSortTime(a.date));
+                // 📌 ရက်စွဲကို ဂဏန်းပြောင်းပြီး အကြီးဆုံး(နောက်ဆုံးရက်) ကို အပေါ်တင်ပေးခြင်း
+                prodLogs.sort((a, b) => getSortNumber(b.date) - getSortNumber(a.date));
+                vouchers.sort((a, b) => getSortNumber(b.date) - getSortNumber(a.date));
 
                 let prodHTML = ''; 
                 prodLogs.forEach(log => {
-                    // 📌 ဇယားထဲတွင် ရက်စွဲကို သေသပ်စွာ ပြပေးခြင်း
                     let displayDate = formatDisplayDate(log.date);
                     prodHTML += `<tr><td>${displayDate}</td><td>${log.prod5kStr}</td><td>${log.prod10kStr}</td><td>${(log.laborCost||0).toLocaleString()}</td><td>${(log.materialsCost||0).toLocaleString()}</td><td>${(log.deliFee||0).toLocaleString()}</td><td style="color:#d32f2f; font-weight:bold;">${(log.totalExp||0).toLocaleString()}</td>
                     <td><button class="action-btn" style="background-color:#d32f2f;" onclick="deleteProdLog('${log._id}')">ဖျက်</button></td></tr>`;
@@ -333,7 +328,7 @@
                 let vHTML = ''; let totalDebt = 0; 
                 vouchers.forEach(v => {
                     totalDebt += (v.debt || 0);
-                    let displayDate = formatDisplayDate(v.date); // 📌 ရက်စွဲကို ပြောင်းခြင်း
+                    let displayDate = formatDisplayDate(v.date);
                     let disc = v.discount ? `<span style="color:#1976d2;">-${v.discount.toLocaleString()}</span>` : '0';
                     let payBtn = v.debt > 0 ? `<button class="action-btn" onclick="payDebt('${v._id}')">ဆပ်မည်</button>` : '<span style="color:#2e7d32; font-weight:bold;">ရှင်းပြီး</span>';
                     let delBtn = `<button class="action-btn" style="background-color:#d32f2f; margin-left:5px;" onclick="deleteVoucher('${v._id}')">ဖျက်</button>`;
