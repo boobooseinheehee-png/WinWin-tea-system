@@ -6,9 +6,9 @@
     <title>ဝင်းဝင်းလ္ဘက်ခြောက် စီမံခန့်ခွဲမှုစနစ်</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f9f4; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 1200px; margin: 0 auto; background: #ffffff; padding: 20px 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .container { max-width: 1300px; margin: 0 auto; background: #ffffff; padding: 20px 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         h1 { color: #2e7d32; text-align: center; margin-bottom: 5px;}
-        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
         .card { background: #e8f5e9; padding: 15px; border-radius: 8px; border-left: 5px solid #4caf50; margin-bottom: 20px; }
         .card h3 { margin-top: 0; color: #1b5e20; border-bottom: 1px solid #c8e6c9; padding-bottom: 5px; font-size: 16px; }
         .form-group { margin-bottom: 10px; }
@@ -23,7 +23,7 @@
         .dash-box span { display: block; font-size: 18px; color: #d32f2f; margin-top: 8px; }
         .income-text { color: #2e7d32 !important; }
         .table-responsive { overflow-x: auto; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; min-width: 800px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
         th { background-color: #4caf50; color: white; }
         .status-debt { color: #d32f2f; font-weight: bold; }
@@ -35,7 +35,7 @@
 
     <div class="container">
         <h1>🍃 ဝင်းဝင်းလ္ဘက်ခြောက် စီမံခန့်ခွဲမှု</h1>
-        <p style="text-align:center; color:#d32f2f; font-weight:bold; margin-top:0;">(Win Win's business)</p>
+        <p style="text-align:center; color:#d32f2f; font-weight:bold; margin-top:0;">(v4.0 15-Kyap-Thar Update)</p>
 
         <div class="grid-3">
             <div class="card">
@@ -60,6 +60,12 @@
                 <div class="flex-row">
                     <div class="form-group"><input type="number" id="prod10kBag" placeholder="အိတ်ရေ"></div>
                     <div class="form-group"><input type="number" id="prod10kPack" placeholder="ပါကင်ရေ"></div>
+                </div>
+
+                <label style="color: #ff9800;">၁၅ ကျပ်သား (ထွက်) - ၁ အိတ် ၆၀ ပါကင်</label>
+                <div class="flex-row">
+                    <div class="form-group"><input type="number" id="prod15kBag" placeholder="အိတ်ရေ"></div>
+                    <div class="form-group"><input type="number" id="prod15kPack" placeholder="ပါကင်ရေ"></div>
                 </div>
 
                 <hr style="border: 0.5px solid #c8e6c9; margin: 10px 0;">
@@ -93,7 +99,10 @@
                     <div class="form-group"><label>လိပ်စာ / ရွာ:</label><input type="text" id="cusAddress" placeholder="မြင်းခြံ"></div>
                 </div>
 
-                <div class="form-group"><label style="color:#d32f2f;">၁ ပါကင် စျေးနှုန်း:</label><input type="number" id="pricePerPack" value="12500" oninput="autoCalculateDiscount()"></div>
+                <div class="flex-row">
+                    <div class="form-group"><label style="color:#d32f2f;">၅ / ၁၀ စျေးနှုန်း:</label><input type="number" id="pricePerPack" value="12500" oninput="autoCalculateDiscount()"></div>
+                    <div class="form-group"><label style="color:#ff9800;">၁၅ကျပ်သား စျေးနှုန်း:</label><input type="number" id="price15k" value="2400" oninput="autoCalculateDiscount()"></div>
+                </div>
                 
                 <label style="color: #1b5e20;">၅ ကျပ်သား (ရောင်း)</label>
                 <div class="flex-row">
@@ -105,6 +114,12 @@
                 <div class="flex-row">
                     <div class="form-group"><input type="number" id="sold10kBag" placeholder="အိတ်ရေ" oninput="autoCalculateDiscount()"></div>
                     <div class="form-group"><input type="number" id="sold10kPack" placeholder="ပါကင်ရေ"></div>
+                </div>
+
+                <label style="color: #ff9800;">၁၅ ကျပ်သား (ရောင်း)</label>
+                <div class="flex-row">
+                    <div class="form-group"><input type="number" id="sold15kBag" placeholder="အိတ်ရေ" oninput="autoCalculateDiscount()"></div>
+                    <div class="form-group"><input type="number" id="sold15kPack" placeholder="ပါကင်ရေ"></div>
                 </div>
 
                 <hr style="border: 0.5px solid #c8e6c9; margin: 10px 0;">
@@ -122,6 +137,7 @@
             <div class="dash-box">ကုန်ကြမ်း လက်ကျန်<span id="displayRawTea">0 ပိဿာ</span></div>
             <div class="dash-box">၅ ကျပ်သား<span id="displayStock5k">0</span></div>
             <div class="dash-box">၁၀ ကျပ်သား<span id="displayStock10k">0</span></div>
+            <div class="dash-box" style="border-color: #ff9800;">၁၅ ကျပ်သား<span id="displayStock15k" style="color:#f57c00;">0</span></div>
             <div class="dash-box">စုစုပေါင်း ရရန်(အကြွေး)<span class="income-text" id="displayTotalDebt">0</span></div>
             <div class="dash-box">စုစုပေါင်း ထွက်ငွေ<span id="displayTotalExpenses">0</span></div>
             <div class="dash-box">အသားတင် လက်ကျန်ငွေ<span class="income-text" id="displayNetCash">0</span></div>
@@ -131,7 +147,7 @@
             <h3 style="margin: 0 0 10px 0; color: #1b5e20;">📊 နေ့စဉ် ထုတ်လုပ်မှု နှင့် စရိတ် မှတ်တမ်း</h3>
             <div class="table-responsive">
                 <table>
-                    <thead><tr><th>ရက်စွဲ</th><th>၅ ကျပ်သား</th><th>၁၀ ကျပ်သား</th><th>လုပ်အားခ</th><th>ပစ္စည်းစရိတ်</th><th>ကားခ/Deli</th><th>စုစုပေါင်း</th><th>Action</th></tr></thead>
+                    <thead><tr><th>ရက်စွဲ</th><th>၅ ကျပ်</th><th>၁၀ ကျပ်</th><th>၁၅ ကျပ်</th><th>လုပ်အားခ</th><th>ပစ္စည်းစရိတ်</th><th>ကားခ/Deli</th><th>စုစုပေါင်း</th><th>Action</th></tr></thead>
                     <tbody id="prodLogBody"></tbody>
                 </table>
             </div>
@@ -141,7 +157,7 @@
             <h3 style="margin: 0 0 10px 0; color: #1b5e20;">📋 ဝယ်သူမှတ်တမ်း နှင့် အကြွေးစာရင်း</h3>
             <div class="table-responsive">
                 <table>
-                    <thead><tr><th>ရက်စွဲ</th><th>ဝယ်သူအချက်အလက်</th><th>၅ ကျပ်သား</th><th>၁၀ ကျပ်သား</th><th>အိတ်ဖိုး</th><th>လျှော့ငွေ</th><th>ကျသင့်ငွေ</th><th>ပေးငွေ</th><th>ကျန်ငွေ</th><th>Action</th></tr></thead>
+                    <thead><tr><th>ရက်စွဲ</th><th>ဝယ်သူအချက်အလက်</th><th>၅ ကျပ်</th><th>၁၀ ကျပ်</th><th>၁၅ ကျပ်</th><th>အိတ်ဖိုး</th><th>Discount</th><th>ကျသင့်ငွေ</th><th>ပေးငွေ</th><th>ကျန်ငွေ</th><th>Action</th></tr></thead>
                     <tbody id="voucherLogBody"></tbody>
                 </table>
             </div>
@@ -152,6 +168,7 @@
         const SERVER_URL = "https://winwin-tea-system.onrender.com";
         const PACKS_PER_5K_BAG = 25; 
         const PACKS_PER_10K_BAG = 24;
+        const PACKS_PER_15K_BAG = 60; // 📌 ၁၅ ကျပ်သား ၁ အိတ် = ၆၀ ပါကင်
 
         document.addEventListener("DOMContentLoaded", () => {
             let today = new Date().toISOString().split('T')[0];
@@ -161,15 +178,18 @@
             loadData();
         });
 
+        // 📌 Discount အလိုလိုတွက်မည့် စနစ် (၁၅ ကျပ်သားအတွက် ၃၀၀၀ နုတ်ပေးမည်)
         function autoCalculateDiscount() {
             const name = document.getElementById('cusName').value;
             const bag5 = parseInt(document.getElementById('sold5kBag').value) || 0;
             const bag10 = parseInt(document.getElementById('sold10kBag').value) || 0;
+            const bag15 = parseInt(document.getElementById('sold15kBag').value) || 0;
             const discountInput = document.getElementById('discount');
 
             if (name.includes("ဖွားမြရီ")) {
-                const totalBags = bag5 + bag10;
-                discountInput.value = totalBags * 7500;
+                let disc5and10 = (bag5 + bag10) * 7500;
+                let disc15 = bag15 * 3000;
+                discountInput.value = disc5and10 + disc15;
             }
         }
 
@@ -210,8 +230,12 @@
             let pack5k = parseInt(document.getElementById('prod5kPack').value) || 0;
             let bag10k = parseInt(document.getElementById('prod10kBag').value) || 0;
             let pack10k = parseInt(document.getElementById('prod10kPack').value) || 0;
+            let bag15k = parseInt(document.getElementById('prod15kBag').value) || 0;
+            let pack15k = parseInt(document.getElementById('prod15kPack').value) || 0;
             
-            let laborCost = (((bag5k * PACKS_PER_5K_BAG) + pack5k) * 160) + (((bag10k * PACKS_PER_10K_BAG) + pack10k) * 140);
+            // 📌 ၁၅ ကျပ်သား လုပ်အားခကို ၁၅၀ ကျပ်ဟု မှန်းထည့်ထားပါသည်
+            let laborCost = (((bag5k * PACKS_PER_5K_BAG) + pack5k) * 160) + (((bag10k * PACKS_PER_10K_BAG) + pack10k) * 140) + (((bag15k * PACKS_PER_15K_BAG) + pack15k) * 150);
+            
             let materialsCost = (parseFloat(document.getElementById('expPlastic').value) || 0) + (parseFloat(document.getElementById('expLabel').value) || 0) + (parseFloat(document.getElementById('expCandle').value) || 0) + (parseFloat(document.getElementById('expOther').value) || 0);
             let expDeli = parseFloat(document.getElementById('expDeli').value) || 0;
             
@@ -219,11 +243,12 @@
                 date: formatDate(document.getElementById('dateProd').value),
                 prod5kStr: (bag5k > 0 ? `${bag5k}အိတ် ` : '') + (pack5k > 0 ? `${pack5k}ပါကင်` : '') || '-',
                 prod10kStr: (bag10k > 0 ? `${bag10k}အိတ် ` : '') + (pack10k > 0 ? `${pack10k}ပါကင်` : '') || '-',
+                prod15kStr: (bag15k > 0 ? `${bag15k}အိတ် ` : '') + (pack15k > 0 ? `${pack15k}ပါကင်` : '') || '-',
                 laborCost: laborCost, materialsCost: materialsCost, deliFee: expDeli, totalExp: laborCost + materialsCost + expDeli
             };
             try {
                 await fetch(SERVER_URL + '/api/production', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dbPayload) });
-                ['prod5kBag', 'prod5kPack', 'prod10kBag', 'prod10kPack', 'expPlastic', 'expLabel', 'expCandle', 'expOther', 'expDeli'].forEach(id => document.getElementById(id).value = '');
+                ['prod5kBag', 'prod5kPack', 'prod10kBag', 'prod10kPack', 'prod15kBag', 'prod15kPack', 'expPlastic', 'expLabel', 'expCandle', 'expOther', 'expDeli'].forEach(id => document.getElementById(id).value = '');
                 loadData();
             } catch (error) { alert("❌ Server Error"); }
         }
@@ -233,14 +258,19 @@
             let pack5k = parseInt(document.getElementById('sold5kPack').value) || 0;
             let bag10k = parseInt(document.getElementById('sold10kBag').value) || 0;
             let pack10k = parseInt(document.getElementById('sold10kPack').value) || 0;
+            let bag15k = parseInt(document.getElementById('sold15kBag').value) || 0;
+            let pack15k = parseInt(document.getElementById('sold15kPack').value) || 0;
             
             let price = parseFloat(document.getElementById('pricePerPack').value) || 12500;
+            let price15 = parseFloat(document.getElementById('price15k').value) || 2400;
             let bagFee = parseFloat(document.getElementById('bagFee').value) || 0;
             let discount = parseFloat(document.getElementById('discount').value) || 0;
             let paid = parseFloat(document.getElementById('paidAmount').value) || 0;
 
-            let totalPacks = ((bag5k * PACKS_PER_5K_BAG) + pack5k) + ((bag10k * PACKS_PER_10K_BAG) + pack10k);
-            let totalCost = (totalPacks * price) + bagFee - discount;
+            let totalPacks5and10 = ((bag5k * PACKS_PER_5K_BAG) + pack5k) + ((bag10k * PACKS_PER_10K_BAG) + pack10k);
+            let totalPacks15 = (bag15k * PACKS_PER_15K_BAG) + pack15k;
+            
+            let totalCost = (totalPacks5and10 * price) + (totalPacks15 * price15) + bagFee - discount;
 
             let dbPayload = {
                 date: formatDate(document.getElementById('dateVoucher').value),
@@ -249,11 +279,12 @@
                 address: document.getElementById('cusAddress').value || '-',
                 sold5kStr: (bag5k > 0 ? `${bag5k}အိတ် ` : '') + (pack5k > 0 ? `${pack5k}ပါကင်` : '') || '-',
                 sold10kStr: (bag10k > 0 ? `${bag10k}အိတ် ` : '') + (pack10k > 0 ? `${pack10k}ပါကင်` : '') || '-',
+                sold15kStr: (bag15k > 0 ? `${bag15k}အိတ် ` : '') + (pack15k > 0 ? `${pack15k}ပါကင်` : '') || '-',
                 bagFee, discount, totalCost, paidAmount: paid, debt: Math.max(0, totalCost - paid)
             };
             try {
                 await fetch(SERVER_URL + '/api/voucher', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dbPayload) });
-                ['cusName', 'cusPhone', 'cusAddress', 'sold5kBag', 'sold5kPack', 'sold10kBag', 'sold10kPack', 'bagFee', 'discount', 'paidAmount'].forEach(id => document.getElementById(id).value = '');
+                ['cusName', 'cusPhone', 'cusAddress', 'sold5kBag', 'sold5kPack', 'sold10kBag', 'sold10kPack', 'sold15kBag', 'sold15kPack', 'bagFee', 'discount', 'paidAmount'].forEach(id => document.getElementById(id).value = '');
                 loadData();
             } catch (error) { alert("❌ Server Error"); }
         }
@@ -284,15 +315,12 @@
             }
         }
 
-        // 📌 ရက်စွဲကို ပြက္ခဒိန်အတိုင်း လုံးဝ အမှားကင်းစစ်ထုတ်မည့် စနစ်သစ်
         const getTimestamp = (dStr) => {
             if (!dStr || dStr === '-') return 0;
             let p = dStr.trim().split(/[-/]/);
             if (p.length !== 3) return 0;
-            
             let year = p[2], month = p[1], day = p[0];
-            if (p[0].length === 4) { year = p[0]; month = p[1]; day = p[2]; } // YYYY-MM-DD
-            
+            if (p[0].length === 4) { year = p[0]; month = p[1]; day = p[2]; }
             return parseInt(`${year}${month.padStart(2, '0')}${day.padStart(2, '0')}`, 10);
         };
 
@@ -305,8 +333,8 @@
 
         async function loadData() {
             try {
-                document.getElementById('prodLogBody').innerHTML = '<tr><td colspan="8" style="color:#1976d2; font-weight:bold;">⏳ Server မှ ဒေတာ ဆွဲယူနေပါသည်...</td></tr>';
-                document.getElementById('voucherLogBody').innerHTML = '<tr><td colspan="10" style="color:#1976d2; font-weight:bold;">⏳ Server မှ ဒေတာ ဆွဲယူနေပါသည်...</td></tr>';
+                document.getElementById('prodLogBody').innerHTML = '<tr><td colspan="9" style="color:#1976d2; font-weight:bold;">⏳ Server မှ ဒေတာ ဆွဲယူနေပါသည်...</td></tr>';
+                document.getElementById('voucherLogBody').innerHTML = '<tr><td colspan="11" style="color:#1976d2; font-weight:bold;">⏳ Server မှ ဒေတာ ဆွဲယူနေပါသည်...</td></tr>';
 
                 let res = await fetch(SERVER_URL + '/api/data'); 
                 if (!res.ok) throw new Error("Server sleeping");
@@ -315,7 +343,6 @@
                 let prodLogs = data.prodLogs || []; let vouchers = data.vouchers || [];
                 let rawMaterials = data.rawMaterials || [];
 
-                // 📌 ကွက်တိ အစဉ်လိုက် ဖြစ်အောင် စီပေးခြင်း (ရက်စွဲတူလျှင် နောက်ဆုံးသွင်းထားတာ အပေါ်ရောက်မည်)
                 prodLogs.sort((a, b) => {
                     let d = getTimestamp(b.date) - getTimestamp(a.date);
                     return d === 0 ? (b._id > a._id ? 1 : -1) : d;
@@ -328,10 +355,10 @@
                 let prodHTML = ''; 
                 prodLogs.forEach(log => {
                     let displayDate = formatDisplayDate(log.date);
-                    prodHTML += `<tr><td>${displayDate}</td><td>${log.prod5kStr}</td><td>${log.prod10kStr}</td><td>${(log.laborCost||0).toLocaleString()}</td><td>${(log.materialsCost||0).toLocaleString()}</td><td>${(log.deliFee||0).toLocaleString()}</td><td style="color:#d32f2f; font-weight:bold;">${(log.totalExp||0).toLocaleString()}</td>
+                    prodHTML += `<tr><td>${displayDate}</td><td>${log.prod5kStr}</td><td>${log.prod10kStr}</td><td style="color:#f57c00;">${log.prod15kStr || '-'}</td><td>${(log.laborCost||0).toLocaleString()}</td><td>${(log.materialsCost||0).toLocaleString()}</td><td>${(log.deliFee||0).toLocaleString()}</td><td style="color:#d32f2f; font-weight:bold;">${(log.totalExp||0).toLocaleString()}</td>
                     <td><button class="action-btn" style="background-color:#d32f2f;" onclick="deleteProdLog('${log._id}')">ဖျက်</button></td></tr>`;
                 });
-                document.getElementById('prodLogBody').innerHTML = prodHTML || '<tr><td colspan="8">မှတ်တမ်းမရှိသေးပါ</td></tr>';
+                document.getElementById('prodLogBody').innerHTML = prodHTML || '<tr><td colspan="9">မှတ်တမ်းမရှိသေးပါ</td></tr>';
 
                 let vHTML = ''; let totalDebt = 0; 
                 vouchers.forEach(v => {
@@ -344,35 +371,39 @@
                     vHTML += `<tr>
                         <td>${displayDate}</td>
                         <td style="text-align:left;"><b>${v.name}</b><br><span style="font-size:10px; color:#555;">📞 ${v.phone} | 🏠 ${v.address}</span></td>
-                        <td>${v.sold5kStr}</td><td>${v.sold10kStr}</td><td>${(v.bagFee||0).toLocaleString()}</td><td>${disc}</td>
+                        <td>${v.sold5kStr}</td><td>${v.sold10kStr}</td><td style="color:#f57c00;">${v.sold15kStr || '-'}</td><td>${(v.bagFee||0).toLocaleString()}</td><td>${disc}</td>
                         <td>${(v.totalCost||0).toLocaleString()}</td><td>${(v.paidAmount||0).toLocaleString()}</td>
                         <td class="status-debt">${(v.debt||0).toLocaleString()}</td>
                         <td>${payBtn}${delBtn}</td>
                     </tr>`;
                 });
-                document.getElementById('voucherLogBody').innerHTML = vHTML || '<tr><td colspan="10">မှတ်တမ်းမရှိသေးပါ</td></tr>';
+                document.getElementById('voucherLogBody').innerHTML = vHTML || '<tr><td colspan="11">မှတ်တမ်းမရှိသေးပါ</td></tr>';
 
                 let tRaw = 0; let tExp = 0; 
                 rawMaterials.forEach(r => { tRaw += (r.viss || 0); tExp += (r.cost || 0); });
                 
-                let p5 = 0; let p10 = 0; 
-                prodLogs.forEach(l => { p5 += parsePacks(l.prod5kStr, 25); p10 += parsePacks(l.prod10kStr, 24); tExp += (l.totalExp || 0); });
+                let p5 = 0; let p10 = 0; let p15 = 0;
+                prodLogs.forEach(l => { p5 += parsePacks(l.prod5kStr, PACKS_PER_5K_BAG); p10 += parsePacks(l.prod10kStr, PACKS_PER_10K_BAG); p15 += parsePacks(l.prod15kStr, PACKS_PER_15K_BAG); tExp += (l.totalExp || 0); });
                 
-                let s5 = 0; let s10 = 0; let tPaid = 0; 
-                vouchers.forEach(v => { s5 += parsePacks(v.sold5kStr, 25); s10 += parsePacks(v.sold10kStr, 24); tPaid += (v.paidAmount || 0); });
+                let s5 = 0; let s10 = 0; let s15 = 0; let tPaid = 0; 
+                vouchers.forEach(v => { s5 += parsePacks(v.sold5kStr, PACKS_PER_5K_BAG); s10 += parsePacks(v.sold10kStr, PACKS_PER_10K_BAG); s15 += parsePacks(v.sold15kStr, PACKS_PER_15K_BAG); tPaid += (v.paidAmount || 0); });
 
                 let formatP = (val, per) => { let isN = val < 0; let v = Math.abs(val); let b = Math.floor(v/per); let p = v%per; let s = (b>0?`${b} အိတ် `:'')+(p>0?`${p} ပါကင်`:''); return (isN?'- ':'')+ (s===''?'0 ပါကင်':s); };
                 
                 document.getElementById('displayRawTea').innerText = tRaw + " ပိဿာ";
-                document.getElementById('displayStock5k').innerHTML = `<div style="color: #1976d2; font-size: 14px; margin-top: 8px;">ရောင်း : ${formatP(s5,25)}</div><div style="color: ${p5-s5 < 0 ? '#d32f2f' : '#2e7d32'}; font-size: 14px; margin-top: 5px;">ကျန် : ${formatP(p5-s5,25)}</div>`;
-                document.getElementById('displayStock10k').innerHTML = `<div style="color: #1976d2; font-size: 14px; margin-top: 8px;">ရောင်း : ${formatP(s10,24)}</div><div style="color: ${p10-s10 < 0 ? '#d32f2f' : '#2e7d32'}; font-size: 14px; margin-top: 5px;">ကျန် : ${formatP(p10-s10,24)}</div>`;
+                document.getElementById('displayStock5k').innerHTML = `<div style="color: #1976d2; font-size: 14px; margin-top: 8px;">ရောင်း : ${formatP(s5,PACKS_PER_5K_BAG)}</div><div style="color: ${p5-s5 < 0 ? '#d32f2f' : '#2e7d32'}; font-size: 14px; margin-top: 5px;">ကျန် : ${formatP(p5-s5,PACKS_PER_5K_BAG)}</div>`;
+                document.getElementById('displayStock10k').innerHTML = `<div style="color: #1976d2; font-size: 14px; margin-top: 8px;">ရောင်း : ${formatP(s10,PACKS_PER_10K_BAG)}</div><div style="color: ${p10-s10 < 0 ? '#d32f2f' : '#2e7d32'}; font-size: 14px; margin-top: 5px;">ကျန် : ${formatP(p10-s10,PACKS_PER_10K_BAG)}</div>`;
+                
+                // 📌 ၁၅ ကျပ်သား Dashboard ထည့်ခြင်း
+                document.getElementById('displayStock15k').innerHTML = `<div style="color: #1976d2; font-size: 14px; margin-top: 8px;">ရောင်း : ${formatP(s15,PACKS_PER_15K_BAG)}</div><div style="color: ${p15-s15 < 0 ? '#d32f2f' : '#f57c00'}; font-size: 14px; margin-top: 5px;">ကျန် : ${formatP(p15-s15,PACKS_PER_15K_BAG)}</div>`;
+                
                 document.getElementById('displayTotalDebt').innerText = totalDebt.toLocaleString();
                 document.getElementById('displayTotalExpenses').innerText = tExp.toLocaleString();
                 document.getElementById('displayNetCash').innerText = (tPaid - tExp).toLocaleString();
 
             } catch (e) {
-                document.getElementById('prodLogBody').innerHTML = '<tr><td colspan="8" style="color:#d32f2f; font-weight:bold;">⚠️ Server အိပ်နေပါသည် (၁ မိနစ်ခန့်စောင့်ပြီး Refresh ပြန်လုပ်ပါ)</td></tr>';
-                document.getElementById('voucherLogBody').innerHTML = '<tr><td colspan="10" style="color:#d32f2f; font-weight:bold;">⚠️ Server အိပ်နေပါသည် (၁ မိနစ်ခန့်စောင့်ပြီး Refresh ပြန်လုပ်ပါ)</td></tr>';
+                document.getElementById('prodLogBody').innerHTML = '<tr><td colspan="9" style="color:#d32f2f; font-weight:bold;">⚠️ Server အိပ်နေပါသည် (၁ မိနစ်ခန့်စောင့်ပြီး Refresh ပြန်လုပ်ပါ)</td></tr>';
+                document.getElementById('voucherLogBody').innerHTML = '<tr><td colspan="11" style="color:#d32f2f; font-weight:bold;">⚠️ Server အိပ်နေပါသည် (၁ မိနစ်ခန့်စောင့်ပြီး Refresh ပြန်လုပ်ပါ)</td></tr>';
             }
         }
     </script>
