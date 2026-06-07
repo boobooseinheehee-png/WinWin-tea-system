@@ -35,7 +35,7 @@
 
     <div class="container">
         <h1>🍃 ဝင်းဝင်းလ္ဘက်ခြောက် စီမံခန့်ခွဲမှု</h1>
-        <p style="text-align:center; color:#d32f2f; font-weight:bold; margin-top:0;">(v4.0 15-Kyap-Thar Update)</p>
+        <p style="text-align:center; color:#d32f2f; font-weight:bold; margin-top:0;">(v4.1 Labor Cost Update)</p>
 
         <div class="grid-3">
             <div class="card">
@@ -168,7 +168,7 @@
         const SERVER_URL = "https://winwin-tea-system.onrender.com";
         const PACKS_PER_5K_BAG = 25; 
         const PACKS_PER_10K_BAG = 24;
-        const PACKS_PER_15K_BAG = 60; // 📌 ၁၅ ကျပ်သား ၁ အိတ် = ၆၀ ပါကင်
+        const PACKS_PER_15K_BAG = 60; 
 
         document.addEventListener("DOMContentLoaded", () => {
             let today = new Date().toISOString().split('T')[0];
@@ -178,7 +178,6 @@
             loadData();
         });
 
-        // 📌 Discount အလိုလိုတွက်မည့် စနစ် (၁၅ ကျပ်သားအတွက် ၃၀၀၀ နုတ်ပေးမည်)
         function autoCalculateDiscount() {
             const name = document.getElementById('cusName').value;
             const bag5 = parseInt(document.getElementById('sold5kBag').value) || 0;
@@ -233,8 +232,8 @@
             let bag15k = parseInt(document.getElementById('prod15kBag').value) || 0;
             let pack15k = parseInt(document.getElementById('prod15kPack').value) || 0;
             
-            // 📌 ၁၅ ကျပ်သား လုပ်အားခကို ၁၅၀ ကျပ်ဟု မှန်းထည့်ထားပါသည်
-            let laborCost = (((bag5k * PACKS_PER_5K_BAG) + pack5k) * 160) + (((bag10k * PACKS_PER_10K_BAG) + pack10k) * 140) + (((bag15k * PACKS_PER_15K_BAG) + pack15k) * 150);
+            // 📌 ၁၅ ကျပ်သား လုပ်အားခကို ၁ ပါကင် ၂၅ ကျပ် (၁ အိတ် ၁၅၀၀) နှုန်းဖြင့် ပြောင်းတွက်ထားပါသည်
+            let laborCost = (((bag5k * PACKS_PER_5K_BAG) + pack5k) * 160) + (((bag10k * PACKS_PER_10K_BAG) + pack10k) * 140) + (((bag15k * PACKS_PER_15K_BAG) + pack15k) * 25);
             
             let materialsCost = (parseFloat(document.getElementById('expPlastic').value) || 0) + (parseFloat(document.getElementById('expLabel').value) || 0) + (parseFloat(document.getElementById('expCandle').value) || 0) + (parseFloat(document.getElementById('expOther').value) || 0);
             let expDeli = parseFloat(document.getElementById('expDeli').value) || 0;
@@ -394,7 +393,6 @@
                 document.getElementById('displayStock5k').innerHTML = `<div style="color: #1976d2; font-size: 14px; margin-top: 8px;">ရောင်း : ${formatP(s5,PACKS_PER_5K_BAG)}</div><div style="color: ${p5-s5 < 0 ? '#d32f2f' : '#2e7d32'}; font-size: 14px; margin-top: 5px;">ကျန် : ${formatP(p5-s5,PACKS_PER_5K_BAG)}</div>`;
                 document.getElementById('displayStock10k').innerHTML = `<div style="color: #1976d2; font-size: 14px; margin-top: 8px;">ရောင်း : ${formatP(s10,PACKS_PER_10K_BAG)}</div><div style="color: ${p10-s10 < 0 ? '#d32f2f' : '#2e7d32'}; font-size: 14px; margin-top: 5px;">ကျန် : ${formatP(p10-s10,PACKS_PER_10K_BAG)}</div>`;
                 
-                // 📌 ၁၅ ကျပ်သား Dashboard ထည့်ခြင်း
                 document.getElementById('displayStock15k').innerHTML = `<div style="color: #1976d2; font-size: 14px; margin-top: 8px;">ရောင်း : ${formatP(s15,PACKS_PER_15K_BAG)}</div><div style="color: ${p15-s15 < 0 ? '#d32f2f' : '#f57c00'}; font-size: 14px; margin-top: 5px;">ကျန် : ${formatP(p15-s15,PACKS_PER_15K_BAG)}</div>`;
                 
                 document.getElementById('displayTotalDebt').innerText = totalDebt.toLocaleString();
